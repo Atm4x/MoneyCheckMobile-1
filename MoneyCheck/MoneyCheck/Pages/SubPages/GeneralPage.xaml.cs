@@ -105,17 +105,10 @@ namespace MoneyCheck.Pages.SubPages
             }
             else
             {
-                foreach (Purchase purchase in App.Transactions)
+                foreach (Purchase purchase in App.Transactions.OrderByDescending(x => x.BoughtAt).Take(5).ToList())
                 {
-                    //Purchase = new Label()
-                    //{
-                    //    TextColor = Color.FromHex("#DE3842"),
-                    //    FontSize = 18,
-                    //    HorizontalOptions = LayoutOptions.Start,
-                    //    Text = $"Покупка на {purchase.Amount.ToString("f")} руб."
-                    //};
-                    var a = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
-                    MyTransactions.Children.Add(a);
+                    var purchases = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
+                    MyTransactions.Children.Add(purchases);
                 }
             }
         }
