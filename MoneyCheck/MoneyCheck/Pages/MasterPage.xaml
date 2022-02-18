@@ -1,0 +1,35 @@
+﻿<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Pages.MasterPage" Title="Try"
+             xmlns:local="clr-namespace:MoneyCheck.Pages.SubPages">
+
+
+    <MasterDetailPage.Master>
+        <ContentPage>
+            <StackLayout Padding="20">
+                <StackLayout.Background>
+                    <LinearGradientBrush StartPoint="0.03,0.45" EndPoint="1.9,1.45">
+                        <GradientStop Color="White"
+                          Offset="0.1" />
+                        <GradientStop Color="#9F9F9F"
+                          Offset="1.0" />
+                    </LinearGradientBrush>
+
+                </StackLayout.Background>
+
+                <Frame  Padding="-5">
+                    <Button Text="Личный Кабинет" Style="{StaticResource buttonStyle}" TextColor="White" FontAttributes="Bold">
+
+                    </Button>
+                </Frame>
+                <Label Text="Меню" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" FontSize="30" Padding="3" TextColor="Black"/>
+
+                <Frame BackgroundColor="Transparent"/>
+                <Button Text="Главная" TextColor="White" FontAttributes="Bold" Style="{StaticResource buttonStyle}"/>
+                <Button Text="Статистика" TextColor="White" FontAttributes="Bold" Style="{StaticResource buttonStyle}"/>
+                <Button Text="Расчёты" TextColor="White" FontAttributes="Bold" Style="{StaticResource buttonStyle}"/>
+                <Button Text="О нас" TextColor="White" FontAttributes="Bold" Style="{StaticResource buttonStyle}"/>
+            </StackLayout>
+        </ContentPage>
+    </MasterDetailPage.Master>
+</MasterDetailPage>

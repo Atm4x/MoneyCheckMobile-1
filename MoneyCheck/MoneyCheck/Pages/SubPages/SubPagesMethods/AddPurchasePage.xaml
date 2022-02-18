@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+xmlns:segmentedcontrol="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Pages.SubPages.SubPagesMethods.AddPurchasePage">
+    <StackLayout Padding="25" Background="#F4F4F4">
+        <Frame CornerRadius="24" Background="White">
+            <StackLayout>
+                <Frame WidthRequest="200" HeightRequest="200" CornerRadius="20" BorderColor="Black">
+
+                </Frame>
+                <Label FontSize="10"/>
+                <Label FontSize="10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Стоимость (руб.)" VerticalOptions="Center"/>
+                    <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
+                        <Frame CornerRadius="2" Padding="0" HasShadow="False">
+                            <Entry BackgroundColor="White" x:Name="Amount" Placeholder="Стоимость" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                        </Frame>
+                    </Frame>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Категория" VerticalOptions="Center"/>
+                    <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
+                        <Frame CornerRadius="2" Padding="0" HasShadow="False">
+                            <Picker ItemDisplayBinding="{Binding Name}" BackgroundColor="White" x:Name="Category" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                        </Frame>
+                    </Frame>
+                </Grid>
+                
+                <Label FontSize="5"/>
+                
+                
+                
+                <Frame CornerRadius="3"  Padding="0"  HorizontalOptions="Center" WidthRequest="200" VerticalOptions="Center">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
+                            <GradientStop Color="#AC49BD"
+                          Offset="0" />
+                            <GradientStop Color="#D069A1"
+                          Offset="1"/>
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <Button Text="Добавить" Background="Transparent" TextColor="White" TextTransform="None" FontSize="20" FontFamily="Verdana"  VerticalOptions="Center" Clicked="AddPurchase"/>
+
+                </Frame>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</ContentPage>
