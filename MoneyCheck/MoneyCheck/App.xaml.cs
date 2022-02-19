@@ -19,6 +19,7 @@ namespace MoneyCheck
         public static List<Purchase> Transactions = new List<Purchase>();
         public static List<object> Debtors = new List<object>();
         public static DataHelper.Data Data;
+        public static UserBalance Balance;
         public static TabbPage tbp;
         public static List<ContentPage> ListPages = new List<ContentPage>();
         public static string backupFilePath = String.Empty;
@@ -37,19 +38,17 @@ namespace MoneyCheck
                 ListPages.Add(page);
             }
 
+            var mainPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            backupFilePath = Path.Combine(mainPath, "Backup.json");
+            if (!File.Exists(backupFilePath))
+            {
+                File.Create(backupFilePath);
+            }
+
             var connection = Connectivity.NetworkAccess;
             if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
             {
-                var mainPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-                backupFilePath = Path.Combine(mainPath, "Backup.json");
-                if(!File.Exists(backupFilePath))
-                {
-                    File.Create(backupFilePath);
-                } 
-                else
-                {
-
-                }
+                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
             }
             else
             {
@@ -97,6 +96,11 @@ namespace MoneyCheck
                     MainPage = new Pages.AuthPage("");
                 }
             }
+        }
+
+        private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+
         }
 
         protected override void OnStart()

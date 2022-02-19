@@ -6,8 +6,51 @@ namespace MoneyCheck.Models
 {
     public class UserBalance
     {
-        public decimal Balance { get; set; }
-        public decimal TodaySpent { get; set; }
-        public decimal FutureCash { get; set; }
+        public UserBalance Clone()
+        {
+            return new UserBalance(_Balance, _TodaySpent, _FutureCash);
+        }
+
+        internal class AmountChangedEventArgs
+        {
+            public decimal OldBalance { get; set; }
+            public decimal NewBalance { get; set; }
+            public decimal Count { get; set; }
+        }
+
+        internal delegate void AmountHandler(AmountChangedEventArgs amount);
+        internal event AmountHandler AmountChanged;
+
+        private decimal _Balance = default;
+        private decimal _TodaySpent = default;
+        private decimal _FutureCash = default;
+
+        public decimal Balance { get => _Balance; set
+            {
+                UserBalance balance = Clone();
+                _Balance = value;
+                AmountChanged?.Invoke(new AmountChangedEventArgs() { OldBalance = balance.Balance, NewBalance = _Balance, Count = _Balance-balance.Balance });
+            } 
+        }
+
+        public decimal TodaySpent { get => _TodaySpent; set
+            {
+                _TodaySpent = value;
+            }
+        }
+
+        public decimal FutureCash { get => _FutureCash; set
+            {
+                _FutureCash = value;
+            }
+        }
+
+        public UserBalance(decimal balance = default, decimal todaySpent = default, decimal futureCash = default)
+        {
+            _Balance = balance;
+            _TodaySpent = todaySpent;
+            _FutureCash = futureCash;
+        }
+
     }
 }

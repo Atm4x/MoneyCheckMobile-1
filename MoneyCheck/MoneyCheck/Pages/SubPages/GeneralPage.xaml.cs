@@ -33,8 +33,13 @@ namespace MoneyCheck.Pages.SubPages
         public GeneralPage()
         {
             InitializeComponent();
+            App.Balance.AmountChanged += BalanceChanged;
         }
 
+        private void BalanceChanged(UserBalance.AmountChangedEventArgs amount)
+        {
+
+        }
 
         private void AddPurchase(object sender, EventArgs e)
         {
@@ -67,6 +72,7 @@ namespace MoneyCheck.Pages.SubPages
                 {
                     PropertyNameCaseInsensitive = true
                 });
+                App.Balance = balance;
                 Balance.Text = (balance.Balance.ToString("f") ?? "0") + " рублей";
                 Predication.Text = (balance.FutureCash.ToString("f") ?? "0") + " рублей";
                 Spent.Text = (balance.TodaySpent.ToString("f") ?? "0") + " рублей";
