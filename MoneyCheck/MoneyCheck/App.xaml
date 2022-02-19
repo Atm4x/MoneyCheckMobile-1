@@ -55,5 +55,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Frame" x:Key="funcButton">
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
+                    <GradientStop Color="#AC49BD"
+                          Offset="0" />
+                    <GradientStop Color="#D069A1"
+                          Offset="1"/>
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

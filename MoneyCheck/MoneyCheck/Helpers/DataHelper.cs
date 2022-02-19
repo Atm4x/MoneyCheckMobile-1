@@ -83,5 +83,9 @@ namespace MoneyCheck.Helpers
             }
         }
 
+        public static void ClearToken()
+        {
+            Preferences.Set("user_token", "");
+        }
     }
 }

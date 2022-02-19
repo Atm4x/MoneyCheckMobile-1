@@ -15,15 +15,17 @@ namespace MoneyCheck
 {
     public partial class App : Application
     {
-        public static string baseUrl = "https://moneycheck.gym1551.ru"; 
+        public static string BaseUrl = "https://moneycheck.gym1551.ru"; 
         public static List<Purchase> Transactions = new List<Purchase>();
         public static List<object> Debtors = new List<object>();
         public static DataHelper.Data Data;
         public static UserBalance UBalance = new UserBalance();
-        public static TabbPage tbp;
+        public static List<Category> Categories = new List<Category>();
+        public static TabbPage Tbp;
         public static List<ContentPage> ListPages = new List<ContentPage>();
-        public static string backupFilePath = String.Empty;
 
+        public static List<Purchase> LocalPurchases = new List<Purchase>();
+        public static string BackupFilePath = String.Empty;
 
         public App()
         {
@@ -31,55 +33,81 @@ namespace MoneyCheck
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTY0NDI5QDMxMzkyZTM0MmUzMFU0eG9iMVp3NXdNMksyM0F2WEFHc0JFZmY4ajJxTGtvMWwxU0RncXBnMTQ9;NTY0NDMwQDMxMzkyZTM0MmUzMFY2ZVBDY291bU9naU41czh2UlRiZXI4RVVhdjB0Q2JiY1lYdjV5MEZGbGM9;NTY0NDMxQDMxMzkyZTM0MmUzMFlCdFhFTmN0TTB2dFgzWU51QUkxeXBISDZPRTBXNDd1OEcyWHdRdC9naWM9;NTY0NDMyQDMxMzkyZTM0MmUzMGtVR2xrZk95djJaNEpvaEx0ZE0zWmRkT1UrN3hKeVJxaEZIdGh6T2FCeTg9");
 
 
-            tbp = new Pages.TabbPage();
+            Tbp = new Pages.TabbPage();
 
-            foreach (ContentPage page in tbp.Children)
+            foreach (ContentPage page in Tbp.Children)
             {
                 ListPages.Add(page);
             }
 
             var mainPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            backupFilePath = Path.Combine(mainPath, "Backup.json");
-            if (!File.Exists(backupFilePath))
+            BackupFilePath = Path.Combine(mainPath, "Backup.json");
+            if (!File.Exists(BackupFilePath))
             {
-                File.Create(backupFilePath);
+                File.Create(BackupFilePath).Close();
             }
 
             var connection = Connectivity.NetworkAccess;
-            if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
-            {
-                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
-            }
-            else
-            {
-                Data = DataHelper.GetData();
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
-                string login = "";
+            Data = DataHelper.GetData();
 
-                if (App.Data != null)
+            string login = "";
+
+            if (App.Data != null)
+            {
+                if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
                 {
+                    var result = File.ReadAllText(BackupFilePath);
+                    if (!String.IsNullOrWhiteSpace(result))
+                    {
+                        var backupModel = JsonSerializer.Deserialize<BackupModel>(result, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                        if (backupModel.purchases?.Count != 0)
+                            App.Transactions = backupModel.purchases;
+                        if (backupModel.balance != null)
+                            App.UBalance = backupModel.balance;
+                        if (backupModel.categories?.Count != 0)
+                            App.Categories = backupModel.categories;
+
+                        ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+
+                        MainPage = new NavigationPage(Tbp);
+                    }
+                    else
+                    {
+                        Environment.Exit(-1);
+                    }
+                }
+                else
+                {
+
                     if (!String.IsNullOrWhiteSpace(App.Data.Login))
                     {
                         login = App.Data.Login;
                     }
                     if (App.Data.ExpiresAt > DateTime.Now)
                     {
-                        var response = Methods.Methods.GetPurchasesResponse();
+                        var response = Methods.Methods.GetStatus();
                         var code = response.statusCode;
                         if (code == HttpStatusCode.OK)
                         {
-                            var result = response.result;
-                            var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
+                            //((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
+                            var categoriesResponse = Methods.Methods.GetCategories();
+                            if (categoriesResponse.statusCode == HttpStatusCode.OK)
                             {
-                                PropertyNameCaseInsensitive = true
-                            }).ToList();
-                            if (purchases.Count != 0)
-                                App.Transactions = purchases;
+                                var result = JsonSerializer.Deserialize<List<Category>>(categoriesResponse.result, new JsonSerializerOptions
+                                {
+                                    PropertyNameCaseInsensitive = true
+                                });
+                                App.Categories = result;
+                            }
+                            App.Tbp.CheckToken();
 
-                            ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
-
-                            MainPage = new NavigationPage(tbp);
-                            App.tbp.CheckToken();
+                            MainPage = new NavigationPage(Tbp);
                         }
                         else
                         {
@@ -90,17 +118,21 @@ namespace MoneyCheck
                     {
                         MainPage = new Pages.AuthPage("");
                     }
+
                 }
-                else
-                {
-                    MainPage = new Pages.AuthPage("");
-                }
+            }
+            else
+            {
+                MainPage = new Pages.AuthPage("");
             }
         }
 
         private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-
+            if(e.NetworkAccess == NetworkAccess.ConstrainedInternet || e.NetworkAccess == NetworkAccess.Internet)
+            {
+                App.Tbp.CheckToken();
+            }
         }
 
         protected override void OnStart()

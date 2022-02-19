@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Xamarin.Forms;
+using Android.Arch.Lifecycle;
 
 namespace MoneyCheck.Droid
 {
@@ -31,5 +33,6 @@ namespace MoneyCheck.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
     }
 }

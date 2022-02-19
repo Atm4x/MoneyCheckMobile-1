@@ -40,18 +40,10 @@ xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib
                 </Grid>
                 
                 <Label FontSize="5"/>
-                
-                
-                
-                <Frame CornerRadius="3"  Padding="0"  HorizontalOptions="Center" WidthRequest="200" VerticalOptions="Center">
-                    <Frame.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0.5,1">
-                            <GradientStop Color="#AC49BD"
-                          Offset="0" />
-                            <GradientStop Color="#D069A1"
-                          Offset="1"/>
-                        </LinearGradientBrush>
-                    </Frame.Background>
+
+
+
+                <Frame CornerRadius="3"  Padding="0"  HorizontalOptions="Center" WidthRequest="200" VerticalOptions="Center" Style="{StaticResource funcButton}">
                     <Button Text="Добавить" Background="Transparent" TextColor="White" TextTransform="None" FontSize="20" FontFamily="Verdana"  VerticalOptions="Center" Clicked="AddPurchase"/>
 
                 </Frame>

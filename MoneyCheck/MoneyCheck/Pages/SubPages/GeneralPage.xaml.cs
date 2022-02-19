@@ -1,12 +1,13 @@
 ﻿using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -48,39 +49,83 @@ namespace MoneyCheck.Pages.SubPages
 
         public async void GoAddPurchase() => await Navigation.PushModalAsync(new Pages.SubPages.SubPagesMethods.AddPurchasePage());
 
+        public void RefreshFromLocal(bool local = false)
+        {
+            if (App.LocalPurchases.Count > 0)
+            {
+                foreach (var purchase in App.LocalPurchases)
+                {
+                    if(!local) Methods.Methods.AddPurchase(purchase);
+                    App.Transactions.Add(purchase);
+                }
+                if (!local) App.LocalPurchases.Clear();
+            }
+        }
         public void Refresh(bool useLocal = false)
         {
-            if (!useLocal)
-            {
-                var purchaseResponse = Methods.Methods.GetPurchasesResponse();
-                var code = purchaseResponse.statusCode;
-                if (code == HttpStatusCode.OK)
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet) {
+                var status = Methods.Methods.GetStatus();
+                if (!useLocal && status.statusCode == HttpStatusCode.OK)
                 {
-                    var result = purchaseResponse.result;
-                    var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
+                    var purchaseResponse = Methods.Methods.GetPurchasesResponse();
+                    var code = purchaseResponse.statusCode;
+                    if (code == HttpStatusCode.OK)
                     {
-                        PropertyNameCaseInsensitive = true
-                    }).ToList();
-                    if (purchases.Count != 0)
-                        App.Transactions = purchases;
+                        var result = purchaseResponse.result;
+                        var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }).ToList();
+                        if (purchases.Count != 0)
+                            App.Transactions = purchases;
+
+                    }
+
+                    var balanceResponse = Methods.Methods.GetBalanceResponse();
+                    if (code == HttpStatusCode.OK)
+                    {
+                        var result = balanceResponse.result;
+                        var balance = JsonSerializer.Deserialize<UserBalance>(result, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+                        App.UBalance.SetBalance(balance);
+                    }
+
+                    try
+                    {
+                        File.WriteAllText(App.BackupFilePath, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Неудача при переписывании Backup файла: " + ex.Message);
+                    }
                 }
 
-
-                var balanceResponse = Methods.Methods.GetBalanceResponse();
-                if (code == HttpStatusCode.OK)
+                RefreshFromLocal(true);
+            } else
+            {
+                var result = File.ReadAllText(App.BackupFilePath);
+                if (!String.IsNullOrWhiteSpace(result))
                 {
-                    var result = balanceResponse.result;
-                    var balance = JsonSerializer.Deserialize<UserBalance>(result, new JsonSerializerOptions
+                    var backupModel = JsonSerializer.Deserialize<BackupModel>(result, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
-                    App.UBalance.SetBalance(balance);
-                    Balance.Text = (balance.Balance.ToString("f") ?? "0") + " рублей";
-                    Predication.Text = (balance.FutureCash.ToString("f") ?? "0") + " рублей";
-                    Spent.Text = (balance.TodaySpent.ToString("f") ?? "0") + " рублей";
+
+                    if (backupModel.purchases?.Count != 0)
+                        App.Transactions = backupModel.purchases;
+                    if (backupModel.balance != null)
+                        App.UBalance = backupModel.balance;
+                    if (backupModel.categories?.Count != 0)
+                        App.Categories = backupModel.categories;
                 }
             }
 
+
+            Balance.Text = (App.UBalance.Balance.ToString("f") ?? "0") + " рублей";
+            Predication.Text = (App.UBalance.FutureCash.ToString("f") ?? "0") + " рублей";
+            Spent.Text = (App.UBalance.TodaySpent.ToString("f") ?? "0") + " рублей";
 
             MyDebtors.Children.Clear();
             MyTransactions.Children.Clear();
@@ -114,10 +159,40 @@ namespace MoneyCheck.Pages.SubPages
             }
             else
             {
-                foreach (Purchase purchase in App.Transactions.OrderByDescending(x => x.BoughtAt).Take(5).ToList())
+                var list = App.Transactions.OrderByDescending(x => x.BoughtAt).Take(5).ToList();
+                if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
                 {
-                    var purchases = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
-                    MyTransactions.Children.Add(purchases);
+                    foreach (Purchase purchase in list)
+                    {
+                        var purchases = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
+                        MyTransactions.Children.Add(purchases);
+                    }
+                } 
+                else
+                {
+                    foreach (Purchase purchase in list)
+                    {
+                        var purchases = Purchase(purchase.Amount, App.Categories.Find(x => x.Id == purchase.CategoryId));
+                        MyTransactions.Children.Add(purchases);
+                    }
+                }
+                if(App.Transactions.Count>5)
+                {
+                    Frame showMore = new Frame();
+                    showMore.Style = (Style)Application.Current.Resources["funcButton"];
+                    showMore.HorizontalOptions = LayoutOptions.Center;
+                    showMore.VerticalOptions = LayoutOptions.Center;
+                    showMore.CornerRadius = 3;
+                    showMore.Padding = 2.5;
+                    Button button = new Button();
+                    button.Text = "Смотреть все";
+                    button.FontSize = 20;
+                    button.TextColor = Color.White;
+                    button.FontFamily = "Verdana";
+                    button.Background = Brush.Transparent;
+                    button.TextTransform = TextTransform.None;
+                    showMore.Content = button;
+                    MyTransactions.Children.Add(showMore);
                 }
             }
         }

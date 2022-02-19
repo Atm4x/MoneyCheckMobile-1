@@ -2,6 +2,7 @@
 using MoneyCheck.Models;
 using MoneyCheck.Pages.SubPages;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,7 +21,8 @@ namespace MoneyCheck.Pages
             InitializeComponent();
             Login.Text = login;
         }
-        private async void SendToTabbedPage() => await Navigation.PushModalAsync(new NavigationPage(App.tbp));
+       // private async void SendToTabbedPage() => await Navigation.PushModalAsync(new NavigationPage(App.Tbp));
+        private void SendToTabbedPage() => App.Current.MainPage = new NavigationPage(App.Tbp);
 
         private async void EnterButton(object sender, EventArgs e)
         {
@@ -32,7 +34,7 @@ namespace MoneyCheck.Pages
 
 
 
-            var url = $"{App.baseUrl}/auth/api/login";
+            var url = $"{App.BaseUrl}/auth/api/login";
             var client = new HttpClient();
 
 
@@ -60,10 +62,18 @@ namespace MoneyCheck.Pages
                 App.Data.Login = Login.Text;
                 App.Data.ExpiresAt = deserializedResult.expiresAt;
 
-
-                ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
+                var categoriesResponse = Methods.Methods.GetCategories();
+                if (categoriesResponse.statusCode == HttpStatusCode.OK)
+                {
+                    var res = JsonSerializer.Deserialize<List<Category>>(categoriesResponse.result, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    App.Categories = res;
+                }
+                
                 SendToTabbedPage();
-                App.tbp.CheckToken();
+                App.Tbp.CheckToken();
                 if (Login.Text.Contains("@gmail.com") ||
                     Login.Text.Contains("@yandex.ru") ||
                     Login.Text.Contains("@mail.ru") ||

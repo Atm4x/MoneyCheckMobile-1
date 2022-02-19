@@ -6,9 +6,8 @@ namespace MoneyCheck.Models
 {
     public class BackupModel
     {
-        public List<Category> categories { get; set; }
-
         public List<Purchase> purchases { get; set; }
+        public List<Category> categories { get; set; }
         public UserBalance balance { get; set; }
     }
 }

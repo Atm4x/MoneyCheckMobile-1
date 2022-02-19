@@ -1,6 +1,8 @@
-﻿using MoneyCheck.Pages.SubPages;
+﻿using MoneyCheck.Helpers;
+using MoneyCheck.Pages.SubPages;
 using System;
 using System.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,10 +23,23 @@ namespace MoneyCheck.Pages
                 DisplayAlert("Ошибка", "Токен не актуален", "Назад");
                 SendToAuthPage("");
             }
-            else
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                CurrentPageChanged += CurrentPageHasChanged;
-                DisplayTitle.Text = "Главная";
+                if (Methods.Methods.GetStatus().statusCode == System.Net.HttpStatusCode.OK)
+                {
+                    General.RefreshFromLocal();
+                    General.Refresh();
+                    CurrentPageChanged += CurrentPageHasChanged;
+                    DisplayTitle.Text = "Главная";
+                }
+                else
+                {
+                    General.RefreshFromLocal(true);
+                    DataHelper.ClearToken();
+                    App.Data = DataHelper.GetData();
+                    DisplayAlert("Токен истёк", "Токен не актуален", "Назад");
+                    SendToAuthPage("");
+                }
             }
         }
         private async void SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));

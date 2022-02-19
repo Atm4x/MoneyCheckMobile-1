@@ -29,7 +29,7 @@
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Text="Ваши транзакции" TextColor="Black" Grid.Row="1" FontSize="22" HorizontalOptions="Center"  Grid.ColumnSpan="2" FontAttributes="Bold"  VerticalOptions="End"/>
+                    <Label Text="Недавние транзакции" TextColor="Black" Grid.Row="1" FontSize="22" HorizontalOptions="Center"  Grid.ColumnSpan="2" FontAttributes="Bold"  VerticalOptions="End"/>
                     <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
                         <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White" Clicked="AddPurchase" />
                     </Frame>

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using MoneyCheck.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,16 +18,32 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
         public AddPurchasePage()
         {
             InitializeComponent();
-            var response = Methods.Methods.GetCategories();
-
-            if(response.statusCode == System.Net.HttpStatusCode.OK)
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var result = JsonSerializer.Deserialize<Models.Category[]>(response.result, new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true
-                }).ToList();
+                var response = App.Categories.Count > 0 ? null : Methods.Methods.GetCategories();
 
-               Category.ItemsSource = result;
+                if (response != null)
+                {
+                    if (response.statusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var result = JsonSerializer.Deserialize<Models.Category[]>(response.result, new JsonSerializerOptions()
+                        {
+                            PropertyNameCaseInsensitive = true
+                        }).ToList();
+
+                        App.Categories = result;
+
+                        Category.ItemsSource = result;
+                    }
+                } 
+                else
+                {
+                    Category.ItemsSource = App.Categories;
+                }
+            } 
+            else
+            {
+                Category.ItemsSource = App.Categories;
             }
         }
 
@@ -53,6 +71,11 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
                 DisplayAlert("Некорректные данные", "цена не может быть отрицательной", "Ок");
                 return;
             }
+            if (amount >= decimal.MaxValue)
+            {
+                DisplayAlert("Некорректные данные", "цена не может быть настолько большой", "Ок");
+                return;
+            }
 
             Models.Purchase purchase = new Models.Purchase();
 
@@ -61,20 +84,35 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             purchase.Amount = amount;
             purchase.BoughtAt = DateTime.Now;
             purchase.CategoryId = selecteditem.Id;
-            purchase.CategoryName = selecteditem.Name; 
+            purchase.CategoryName = selecteditem.Name;
 
-            var response = Methods.Methods.AddPurchase(purchase);
 
-            if (response.statusCode == System.Net.HttpStatusCode.OK)
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
-                Navigation.PopModalAsync();
-            }
+                var response = Methods.Methods.AddPurchase(purchase);
+
+                if (response.statusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
+                }
+                else
+                {
+                    DisplayAlert("Ошибка при добавлении Purchase", "понял да?", "Ок");
+                    return;
+                }
+            } 
             else
             {
-                DisplayAlert("Ошибка при добавлении Purchase", "понял да?", "Ок");
-                return;
+                App.LocalPurchases.Add(purchase);
             }
+            try
+            {
+                File.WriteAllText(App.BackupFilePath, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
+            } catch(Exception ex)
+            {
+                DisplayAlert("Ошибка при добавлении", "Неудача при переписывании Backup файла: " + ex.Message, "ОК");
+            }
+            Navigation.PopModalAsync();
         }
     }
 }
