@@ -33,7 +33,7 @@ namespace MoneyCheck.Pages.SubPages
         public GeneralPage()
         {
             InitializeComponent();
-            App.Balance.AmountChanged += BalanceChanged;
+            App.UBalance.AmountChanged += BalanceChanged;
         }
 
         private void BalanceChanged(UserBalance.AmountChangedEventArgs amount)
@@ -48,34 +48,37 @@ namespace MoneyCheck.Pages.SubPages
 
         public async void GoAddPurchase() => await Navigation.PushModalAsync(new Pages.SubPages.SubPagesMethods.AddPurchasePage());
 
-        public void Refresh()
+        public void Refresh(bool useLocal = false)
         {
-            var purchaseResponse = Methods.Methods.GetPurchasesResponse();
-            var code = purchaseResponse.statusCode;
-            if (code == HttpStatusCode.OK)
+            if (!useLocal)
             {
-                var result = purchaseResponse.result;
-                var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
+                var purchaseResponse = Methods.Methods.GetPurchasesResponse();
+                var code = purchaseResponse.statusCode;
+                if (code == HttpStatusCode.OK)
                 {
-                    PropertyNameCaseInsensitive = true
-                }).ToList();
-                if (purchases.Count != 0)
-                    App.Transactions = purchases;
-            }
+                    var result = purchaseResponse.result;
+                    var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }).ToList();
+                    if (purchases.Count != 0)
+                        App.Transactions = purchases;
+                }
 
 
-            var balanceResponse = Methods.Methods.GetBalanceResponse();
-            if (code == HttpStatusCode.OK)
-            {
-                var result = balanceResponse.result;
-                var balance = JsonSerializer.Deserialize<UserBalance>(result, new JsonSerializerOptions
+                var balanceResponse = Methods.Methods.GetBalanceResponse();
+                if (code == HttpStatusCode.OK)
                 {
-                    PropertyNameCaseInsensitive = true
-                });
-                App.Balance = balance;
-                Balance.Text = (balance.Balance.ToString("f") ?? "0") + " рублей";
-                Predication.Text = (balance.FutureCash.ToString("f") ?? "0") + " рублей";
-                Spent.Text = (balance.TodaySpent.ToString("f") ?? "0") + " рублей";
+                    var result = balanceResponse.result;
+                    var balance = JsonSerializer.Deserialize<UserBalance>(result, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    App.UBalance.SetBalance(balance);
+                    Balance.Text = (balance.Balance.ToString("f") ?? "0") + " рублей";
+                    Predication.Text = (balance.FutureCash.ToString("f") ?? "0") + " рублей";
+                    Spent.Text = (balance.TodaySpent.ToString("f") ?? "0") + " рублей";
+                }
             }
 
 

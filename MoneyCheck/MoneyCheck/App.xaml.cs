@@ -19,7 +19,7 @@ namespace MoneyCheck
         public static List<Purchase> Transactions = new List<Purchase>();
         public static List<object> Debtors = new List<object>();
         public static DataHelper.Data Data;
-        public static UserBalance Balance;
+        public static UserBalance UBalance = new UserBalance();
         public static TabbPage tbp;
         public static List<ContentPage> ListPages = new List<ContentPage>();
         public static string backupFilePath = String.Empty;

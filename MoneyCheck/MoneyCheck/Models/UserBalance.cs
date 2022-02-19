@@ -25,6 +25,8 @@ namespace MoneyCheck.Models
         private decimal _TodaySpent = default;
         private decimal _FutureCash = default;
 
+        public UserBalance userBalance { get; set; }
+
         public decimal Balance { get => _Balance; set
             {
                 UserBalance balance = Clone();
@@ -52,5 +54,11 @@ namespace MoneyCheck.Models
             _FutureCash = futureCash;
         }
 
+        public void SetBalance(UserBalance balance)
+        {
+            FutureCash = balance.FutureCash;
+            TodaySpent = balance.TodaySpent;
+            Balance = balance.Balance;
+        }
     }
 }

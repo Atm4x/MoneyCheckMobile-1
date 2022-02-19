@@ -5,13 +5,12 @@
             xmlns:local="clr-namespace:MoneyCheck.Pages.SubPages"
             BarBackground="White" 
             BarTextColor="Black"
-            
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"    
             android:TabbedPage.ToolbarPlacement="Bottom"
             android:TabbedPage.OffscreenPageLimit="6"
-            
-            android:TabbedPage.IsSmoothScrollEnabled="True" SelectedTabColor="#B122F4">
-
+            android:TabbedPage.IsSmoothScrollEnabled="True" 
+            SelectedTabColor="#B122F4" 
+            UnselectedTabColor="Gray">
     <NavigationPage.TitleView>
         <Grid Background="#7b1ba8">
             <Grid.ColumnDefinitions>
@@ -20,7 +19,6 @@
             </Grid.ColumnDefinitions>
             <Label Background="#7b1ba8" Grid.ColumnSpan="2" FontSize="20" TextColor="White" x:Name="DisplayTitle" HorizontalOptions="Center"/>
             <Image Grid.Column="1" Source="Images/LogoIconWhite.png"/>
-
         </Grid>
     </NavigationPage.TitleView>
     <local:GeneralPage IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png"></local:GeneralPage>
