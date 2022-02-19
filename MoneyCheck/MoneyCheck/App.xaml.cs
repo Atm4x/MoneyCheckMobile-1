@@ -15,7 +15,7 @@ namespace MoneyCheck
 {
     public partial class App : Application
     {
-        public static string baseUrl = "http://89.250.8.5:5000"; 
+        public static string baseUrl = "https://moneycheck.gym1551.ru"; 
         public static List<Purchase> Transactions = new List<Purchase>();
         public static List<object> Debtors = new List<object>();
         public static DataHelper.Data Data;
