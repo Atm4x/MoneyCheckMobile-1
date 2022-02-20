@@ -33,7 +33,7 @@ xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib
                     <Label Text="Стоимость (руб.)" VerticalOptions="Center"/>
                     <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
                         <Frame CornerRadius="2" Padding="0" HasShadow="False">
-                            <Entry BackgroundColor="White" x:Name="Amount" Placeholder="Стоимость" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                            <Entry BackgroundColor="White" x:Name="Amount" Keyboard="Numeric" Placeholder="Стоимость" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
                         </Frame>
                     </Frame>
                 </Grid>

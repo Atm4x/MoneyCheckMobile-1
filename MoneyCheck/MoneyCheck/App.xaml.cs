@@ -142,8 +142,17 @@ namespace MoneyCheck
         {
         }
 
-        protected override void OnResume()
+        protected override async void OnResume()
         {
+            try
+            {
+                var location = await Geolocation.GetLastKnownLocationAsync();
+                if (location != null)
+                {
+                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}, Accuracy: {location.Accuracy}");
+                }
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
     }
 }
