@@ -11,13 +11,14 @@ using Android.Arch.Lifecycle;
 
 namespace MoneyCheck.Droid
 {
-    [Activity(Label = "Money Check", Icon = "@drawable/MoneyCheckMainIcon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize, ScreenOrientation = ScreenOrientation.Portrait )]
+    [Activity(Label = "Money Check", Icon = "@drawable/MoneyCheckMainIcon", Theme = "@style/MyTheme")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
+            
 
             base.OnCreate(savedInstanceState);
 
