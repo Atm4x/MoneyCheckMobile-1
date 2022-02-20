@@ -15,7 +15,7 @@ namespace MoneyCheck
 {
     public partial class App : Application
     {
-        public static string BaseUrl = "https://moneycheck.gym1551.ru"; 
+        public static string BaseUrl = "https://moneycheck.gym1551.ru";
         public static List<Purchase> Transactions = new List<Purchase>();
         public static List<object> Debtors = new List<object>();
         public static DataHelper.Data Data;
@@ -33,7 +33,7 @@ namespace MoneyCheck
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTY0NDI5QDMxMzkyZTM0MmUzMFU0eG9iMVp3NXdNMksyM0F2WEFHc0JFZmY4ajJxTGtvMWwxU0RncXBnMTQ9;NTY0NDMwQDMxMzkyZTM0MmUzMFY2ZVBDY291bU9naU41czh2UlRiZXI4RVVhdjB0Q2JiY1lYdjV5MEZGbGM9;NTY0NDMxQDMxMzkyZTM0MmUzMFlCdFhFTmN0TTB2dFgzWU51QUkxeXBISDZPRTBXNDd1OEcyWHdRdC9naWM9;NTY0NDMyQDMxMzkyZTM0MmUzMGtVR2xrZk95djJaNEpvaEx0ZE0zWmRkT1UrN3hKeVJxaEZIdGh6T2FCeTg9");
 
 
-            Tbp = new Pages.TabbPage();
+            Tbp = new TabbPage();
 
             foreach (ContentPage page in Tbp.Children)
             {
@@ -59,7 +59,7 @@ namespace MoneyCheck
                 if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
                 {
                     var backupModel = BackupHelper.ReadBackup(App.BackupFilePath);
-                    if (backupModel!=null)
+                    if (backupModel != null)
                     {
 
                         if (backupModel?.purchases?.Count != 0)
@@ -134,8 +134,8 @@ namespace MoneyCheck
 
         protected override void OnStart()
         {
-            
-            
+
+
         }
 
         protected override void OnSleep()

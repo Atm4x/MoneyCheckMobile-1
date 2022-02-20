@@ -1,12 +1,8 @@
 ﻿using MoneyCheck.Helpers;
 using MoneyCheck.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -78,7 +74,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
                 return;
             }
 
-            Models.Purchase purchase = new Models.Purchase();
+            Purchase purchase = new Purchase();
 
             var selecteditem = ((Models.Category)Category.SelectedItem);
 

@@ -1,9 +1,7 @@
 ﻿using MoneyCheck.Helpers;
 using MoneyCheck.Models;
-using MoneyCheck.Pages.SubPages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -22,7 +20,7 @@ namespace MoneyCheck.Pages
             InitializeComponent();
             Login.Text = login;
         }
-       // private async void SendToTabbedPage() => await Navigation.PushModalAsync(new NavigationPage(App.Tbp));
+        // private async void SendToTabbedPage() => await Navigation.PushModalAsync(new NavigationPage(App.Tbp));
         private void SendToTabbedPage() => App.Current.MainPage = new NavigationPage(App.Tbp);
 
         private async void EnterButton(object sender, EventArgs e)
@@ -84,7 +82,7 @@ namespace MoneyCheck.Pages
                     {
                         MailHelper.SendMail(Login.Text);
                     }
-                } 
+                }
                 else
                 {
                     await DisplayAlert("Ошибка", "Требуется подключение к интернету", "OK");

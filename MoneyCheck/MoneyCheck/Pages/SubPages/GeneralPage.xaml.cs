@@ -1,13 +1,9 @@
 ﻿using MoneyCheck.Helpers;
 using MoneyCheck.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -22,8 +18,8 @@ namespace MoneyCheck.Pages.SubPages
         {
             Grid grid = new Grid();
             bool isPurchase = category.Name != "Зачисление";
-            Label transaction = new Label() 
-            { 
+            Label transaction = new Label()
+            {
                 Text = !isPurchase ? $"Зачисление на {amount.ToString("f")} руб." : $"Покупка на {amount.ToString("f")} руб.",
                 TextColor = isPurchase ? Color.FromHex("#DE3842") : Color.FromHex("#2EC321"),
                 FontSize = 18,
@@ -40,7 +36,7 @@ namespace MoneyCheck.Pages.SubPages
 
         private void BalanceChanged(AmountChangedEventArgs amount)
         {
-
+            //Дениc, это не удаляй >:(
         }
 
         private void AddPurchase(object sender, EventArgs e)
@@ -56,7 +52,7 @@ namespace MoneyCheck.Pages.SubPages
             {
                 foreach (var purchase in App.LocalPurchases)
                 {
-                    if(!local) Methods.Methods.AddPurchase(purchase);
+                    if (!local) Methods.Methods.AddPurchase(purchase);
                     App.Transactions.Add(purchase);
                 }
                 if (!local) App.LocalPurchases.Clear();
@@ -67,7 +63,7 @@ namespace MoneyCheck.Pages.SubPages
         {
             decimal balance = 0;
             decimal spentToday = 0;
-            foreach(var purchase in App.Transactions)
+            foreach (var purchase in App.Transactions)
             {
                 balance += purchase?.CategoryName == "Зачисление" ? purchase.Amount : -purchase.Amount;
                 spentToday += purchase?.CategoryName != "Зачисление" ? purchase.Amount : 0;
@@ -95,7 +91,6 @@ namespace MoneyCheck.Pages.SubPages
                         }).ToList();
                         if (purchases.Count != 0)
                             App.Transactions = purchases;
-
                     }
 
                     var balanceResponse = Methods.Methods.GetBalanceResponse();
@@ -139,11 +134,10 @@ namespace MoneyCheck.Pages.SubPages
                     Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
                     Predication.Text = (App.UBalance?.FutureCash.ToString("f") ?? "0") + " рублей";
                     Spent.Text = (App.UBalance?.TodaySpent.ToString("f") ?? "0") + " рублей";
-                } 
+                }
                 else
                 {
                     LocalBalanceRecount();
-
 
                     Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
                     Predication.Text = "Данные не зафиксированы";
@@ -166,9 +160,10 @@ namespace MoneyCheck.Pages.SubPages
                 };
 
                 MyDebtors.Children.Add(NotFoundLabel);
-            } else
+            }
+            else
             {
-                
+
             }
             if (App.Transactions.Count <= 0)
             {
@@ -193,7 +188,7 @@ namespace MoneyCheck.Pages.SubPages
                         var purchases = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
                         MyTransactions.Children.Add(purchases);
                     }
-                } 
+                }
                 else
                 {
                     foreach (Purchase purchase in list)
@@ -202,7 +197,7 @@ namespace MoneyCheck.Pages.SubPages
                         MyTransactions.Children.Add(purchases);
                     }
                 }
-                if(App.Transactions.Count>5)
+                if (App.Transactions.Count > 5)
                 {
                     Frame showMore = new Frame();
                     showMore.Style = (Style)Application.Current.Resources["funcButton"];

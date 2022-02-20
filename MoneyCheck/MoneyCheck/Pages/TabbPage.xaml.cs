@@ -1,7 +1,5 @@
 ﻿using MoneyCheck.Helpers;
-using MoneyCheck.Pages.SubPages;
 using System;
-using System.Linq;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -44,8 +42,9 @@ namespace MoneyCheck.Pages
         }
         private async void SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
 
-        private void CurrentPageHasChanged(object sender, EventArgs e) {
-            DisplayTitle.Text = CurrentPage.Title; 
+        private void CurrentPageHasChanged(object sender, EventArgs e)
+        {
+            DisplayTitle.Text = CurrentPage.Title;
         }
 
     }
