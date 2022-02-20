@@ -1,4 +1,5 @@
-﻿using MoneyCheck.Models;
+﻿using MoneyCheck.Helpers;
+using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -86,6 +87,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             purchase.CategoryId = selecteditem.Id;
             purchase.CategoryName = selecteditem.Name;
 
+            bool local = false;
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
@@ -94,24 +96,34 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
                 if (response.statusCode == System.Net.HttpStatusCode.OK)
                 {
                     ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
+                    local = false;
                 }
                 else
                 {
                     DisplayAlert("Ошибка при добавлении Purchase", "понял да?", "Ок");
                     return;
                 }
+                if (!BackupHelper.RewriteBackup(App.BackupFilePath))
+                {
+                    DisplayAlert("Ошибка при добавлении", "Неудача при переписывании Backup файла", "ОК");
+                    return;
+                }
             } 
             else
             {
+                local = true;
                 App.LocalPurchases.Add(purchase);
             }
-            try
+            if (local)
             {
-                File.WriteAllText(App.BackupFilePath, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
-            } catch(Exception ex)
-            {
-                DisplayAlert("Ошибка при добавлении", "Неудача при переписывании Backup файла: " + ex.Message, "ОК");
+                ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
             }
+
+            Navigation.PopModalAsync();
+        }
+
+        private void GoBackClick(object sender, EventArgs e)
+        {
             Navigation.PopModalAsync();
         }
     }

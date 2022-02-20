@@ -19,6 +19,12 @@
         <Style TargetType="Entry">
             <Setter Property="TextColor" Value="Black"/>
         </Style>
+        <Style TargetType="Picker">
+            <Setter Property="TextColor" Value="Black"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="Black"/>
+        </Style>
         <Style TargetType="Button" x:Key="buttonStyle">
             <Setter Property="Background">
                 <Setter.Value>

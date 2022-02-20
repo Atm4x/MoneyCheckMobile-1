@@ -4,18 +4,18 @@ using System.Text;
 
 namespace MoneyCheck.Models
 {
+    public class AmountChangedEventArgs
+    {
+        public decimal OldBalance { get; set; }
+        public decimal NewBalance { get; set; }
+        public decimal Count { get; set; }
+    }
+
     public class UserBalance
     {
         public UserBalance Clone()
         {
             return new UserBalance(_Balance, _TodaySpent, _FutureCash);
-        }
-
-        internal class AmountChangedEventArgs
-        {
-            public decimal OldBalance { get; set; }
-            public decimal NewBalance { get; set; }
-            public decimal Count { get; set; }
         }
 
         internal delegate void AmountHandler(AmountChangedEventArgs amount);

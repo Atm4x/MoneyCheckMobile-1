@@ -1,4 +1,5 @@
-﻿using MoneyCheck.Models;
+﻿using MoneyCheck.Helpers;
+using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +38,7 @@ namespace MoneyCheck.Pages.SubPages
             App.UBalance.AmountChanged += BalanceChanged;
         }
 
-        private void BalanceChanged(UserBalance.AmountChangedEventArgs amount)
+        private void BalanceChanged(AmountChangedEventArgs amount)
         {
 
         }
@@ -47,7 +48,7 @@ namespace MoneyCheck.Pages.SubPages
             GoAddPurchase();
         }
 
-        public async void GoAddPurchase() => await Navigation.PushModalAsync(new Pages.SubPages.SubPagesMethods.AddPurchasePage());
+        public async void GoAddPurchase() => await Navigation.PushModalAsync(new NavigationPage(new SubPagesMethods.AddPurchasePage()));
 
         public void RefreshFromLocal(bool local = false)
         {
@@ -61,9 +62,25 @@ namespace MoneyCheck.Pages.SubPages
                 if (!local) App.LocalPurchases.Clear();
             }
         }
+
+        public void LocalBalanceRecount()
+        {
+            decimal balance = 0;
+            decimal spentToday = 0;
+            foreach(var purchase in App.Transactions)
+            {
+                balance += purchase?.CategoryName == "Зачисление" ? purchase.Amount : -purchase.Amount;
+                spentToday += purchase?.CategoryName != "Зачисление" ? purchase.Amount : 0;
+            }
+            App.UBalance.Balance = balance;
+            App.UBalance.TodaySpent = spentToday;
+        }
+
+
         public void Refresh(bool useLocal = false)
         {
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet) {
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            {
                 var status = Methods.Methods.GetStatus();
                 if (!useLocal && status.statusCode == HttpStatusCode.OK)
                 {
@@ -91,41 +108,50 @@ namespace MoneyCheck.Pages.SubPages
                         });
                         App.UBalance.SetBalance(balance);
                     }
-
-                    try
+                    if (!BackupHelper.RewriteBackup(App.BackupFilePath))
                     {
-                        File.WriteAllText(App.BackupFilePath, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Неудача при переписывании Backup файла: " + ex.Message);
+                        Console.WriteLine("Неудача при переписывании Backup файла");
                     }
                 }
 
                 RefreshFromLocal(true);
-            } else
-            {
-                var result = File.ReadAllText(App.BackupFilePath);
-                if (!String.IsNullOrWhiteSpace(result))
-                {
-                    var backupModel = JsonSerializer.Deserialize<BackupModel>(result, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
 
-                    if (backupModel.purchases?.Count != 0)
-                        App.Transactions = backupModel.purchases;
-                    if (backupModel.balance != null)
+
+                Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
+                Predication.Text = (App.UBalance?.FutureCash.ToString("f") ?? "0") + " рублей";
+                Spent.Text = (App.UBalance?.TodaySpent.ToString("f") ?? "0") + " рублей";
+            }
+            else
+            {
+                var backupModel = BackupHelper.ReadBackup(App.BackupFilePath);
+
+                if (backupModel?.purchases?.Count != 0)
+                    App.Transactions = backupModel.purchases.ToList();
+                if (backupModel?.categories?.Count != 0)
+                    App.Categories = backupModel.categories.ToList();
+
+                RefreshFromLocal(true);
+                if (App.Transactions.Count <= backupModel.purchases.Count)
+                {
+                    if (backupModel?.balance != null)
                         App.UBalance = backupModel.balance;
-                    if (backupModel.categories?.Count != 0)
-                        App.Categories = backupModel.categories;
+
+                    Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
+                    Predication.Text = (App.UBalance?.FutureCash.ToString("f") ?? "0") + " рублей";
+                    Spent.Text = (App.UBalance?.TodaySpent.ToString("f") ?? "0") + " рублей";
+                } 
+                else
+                {
+                    LocalBalanceRecount();
+
+
+                    Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
+                    Predication.Text = "Данные не зафиксированы";
+                    Spent.Text = (App.UBalance?.TodaySpent.ToString("f") ?? "0") + " рублей";
                 }
             }
 
 
-            Balance.Text = (App.UBalance.Balance.ToString("f") ?? "0") + " рублей";
-            Predication.Text = (App.UBalance.FutureCash.ToString("f") ?? "0") + " рублей";
-            Spent.Text = (App.UBalance.TodaySpent.ToString("f") ?? "0") + " рублей";
 
             MyDebtors.Children.Clear();
             MyTransactions.Children.Clear();

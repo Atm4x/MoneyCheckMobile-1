@@ -58,19 +58,15 @@ namespace MoneyCheck
             {
                 if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
                 {
-                    var result = File.ReadAllText(BackupFilePath);
-                    if (!String.IsNullOrWhiteSpace(result))
+                    var backupModel = BackupHelper.ReadBackup(App.BackupFilePath);
+                    if (backupModel!=null)
                     {
-                        var backupModel = JsonSerializer.Deserialize<BackupModel>(result, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
 
-                        if (backupModel.purchases?.Count != 0)
+                        if (backupModel?.purchases?.Count != 0)
                             App.Transactions = backupModel.purchases;
-                        if (backupModel.balance != null)
+                        if (backupModel?.balance != null)
                             App.UBalance = backupModel.balance;
-                        if (backupModel.categories?.Count != 0)
+                        if (backupModel?.categories?.Count != 0)
                             App.Categories = backupModel.categories;
 
                         ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
@@ -84,7 +80,6 @@ namespace MoneyCheck
                 }
                 else
                 {
-
                     if (!String.IsNullOrWhiteSpace(App.Data.Login))
                     {
                         login = App.Data.Login;
@@ -95,7 +90,6 @@ namespace MoneyCheck
                         var code = response.statusCode;
                         if (code == HttpStatusCode.OK)
                         {
-                            //((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
                             var categoriesResponse = Methods.Methods.GetCategories();
                             if (categoriesResponse.statusCode == HttpStatusCode.OK)
                             {
@@ -129,9 +123,12 @@ namespace MoneyCheck
 
         private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            if(e.NetworkAccess == NetworkAccess.ConstrainedInternet || e.NetworkAccess == NetworkAccess.Internet)
+            if (App.Data != null)
             {
-                App.Tbp.CheckToken();
+                if (e.NetworkAccess == NetworkAccess.ConstrainedInternet || e.NetworkAccess == NetworkAccess.Internet)
+                {
+                    App.Tbp.CheckToken();
+                }
             }
         }
 

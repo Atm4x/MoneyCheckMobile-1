@@ -83,6 +83,13 @@ namespace MoneyCheck.Helpers
             }
         }
 
+        public static void ClearAll()
+        {
+            Preferences.Set("user_token", "");
+            Preferences.Set("user_login", "");
+            Preferences.Set("user_tokenExpire", default(DateTime));
+        }
+
         public static void ClearToken()
         {
             Preferences.Set("user_token", "");
