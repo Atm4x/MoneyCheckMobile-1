@@ -38,17 +38,6 @@ namespace MoneyCheck.Models
             return default;
         }
 
-        public T GetParsed<T>()
-        {
-            if (this?.statusCode == HttpStatusCode.OK)
-            {
-                var result = JsonSerializer.Deserialize<T>(this?.result, new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-                return result;
-            }
-            return default;
-        }
+        public T GetParsed<T>() => Parse<T>(this);
     }
 }
