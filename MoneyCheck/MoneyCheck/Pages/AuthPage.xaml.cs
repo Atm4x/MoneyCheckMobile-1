@@ -12,7 +12,6 @@ using Xamarin.Forms.Xaml;
 
 namespace MoneyCheck.Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AuthPage : ContentPage
     {
         public AuthPage(string login)
