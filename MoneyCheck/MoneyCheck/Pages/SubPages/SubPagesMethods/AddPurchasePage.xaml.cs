@@ -1,6 +1,7 @@
 ﻿using MoneyCheck.Helpers;
 using MoneyCheck.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Xamarin.Essentials;
@@ -17,22 +18,12 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             InitializeComponent();
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = App.Categories.Count > 0 ? null : Methods.Methods.GetCategories();
-
-                if (response != null)
+                var response = Methods.Methods.GetCategories();
+                if (ResponseModel.TryParse(response, out List<Category> categories))
                 {
-                    if (response.statusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var result = JsonSerializer.Deserialize<Models.Category[]>(response.result, new JsonSerializerOptions()
-                        {
-                            PropertyNameCaseInsensitive = true
-                        }).ToList();
-
-                        App.Categories = result;
-
-                        Category.ItemsSource = result;
-                    }
-                } 
+                    App.Categories = categories;
+                    Category.ItemsSource = categories;
+                }                
                 else
                 {
                     Category.ItemsSource = App.Categories;
@@ -76,7 +67,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             Purchase purchase = new Purchase();
 
-            var selecteditem = ((Models.Category)Category.SelectedItem);
+            var selecteditem = (Models.Category)Category.SelectedItem;
 
             purchase.Amount = amount;
             purchase.BoughtAt = DateTime.Now;
