@@ -107,6 +107,7 @@ namespace MoneyCheck.Pages.SubPages
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
                 var status = Methods.Methods.GetStatus();
+                RefreshFromLocal(true);
                 if (!useLocal && status.statusCode == HttpStatusCode.OK)
                 {
                     var purchaseResponse = Methods.Methods.GetPurchasesResponse();
@@ -138,7 +139,6 @@ namespace MoneyCheck.Pages.SubPages
                     }
                 }
 
-                RefreshFromLocal(true);
 
 
                 Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
