@@ -21,14 +21,14 @@
             <Image Grid.Column="1" Source="Images/LogoIconWhite.png"/>
         </Grid>
     </NavigationPage.TitleView>
-    <local:GeneralPage IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png" x:Name="General"></local:GeneralPage>
-    <ContentPage Title="Статистика" IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png">
+    <local:GeneralPage IconImageSource="Images/mobileMain.png" x:Name="General"></local:GeneralPage>
+    <ContentPage Title="Статистика" IconImageSource="Images/mobileStat.png">
     </ContentPage>
-    <ContentPage Title="Профиль" IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png">
+    <ContentPage Title="Профиль" IconImageSource="Images/mobileMyAcc.png">
     </ContentPage>
-    <ContentPage Title="Расчеты" IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png">
+    <ContentPage Title="Расчеты" IconImageSource="Images/mobileCalculations.png">
     </ContentPage>
-    <ContentPage Title="О нас" IconImageSource="https://www.freeiconspng.com/thumbs/financial-icon-png/financial-icon-png-don-8.png">
+    <ContentPage Title="О нас" IconImageSource="Images/mobileAbout.png">
     </ContentPage>
 
 </TabbedPage>

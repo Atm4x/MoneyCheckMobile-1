@@ -17,7 +17,6 @@
                     </StackLayout>
                 </Frame>
 
-                <Label Text=""/>
                 <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

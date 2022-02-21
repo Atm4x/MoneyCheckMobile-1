@@ -3,7 +3,6 @@
 
   <style name="MyTheme" parent="MyTheme.Base">
 
-
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:statusBarColor">#B122F4</item>
@@ -22,6 +21,8 @@
          which is used to tint widgets -->
     <!--<item name="colorAccent">#FF4081</item>-->
   </style>
+
+  
 
   <style name="MyTheme.Base" parent="Theme.AppCompat.Light">
   </style>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Controls.StackLayoutControl"
+             xmlns:local="clr-namespace:MoneyCheck.Converters">
+    <StackLayout.Resources>
+        <ResourceDictionary>
+            <local:BoolToColorConverter x:Key="BoolToColor" TrueValue="#DE3842" FalseValue="#2EC321"/>
+        </ResourceDictionary>
+    </StackLayout.Resources>
+    <Label TextColor="{Binding Converter={StaticResource BoolToColor}, Path=IsPurchase}" FontSize="18" Text="{Binding Path=PurchasePhrase}"/>
+    <Label TextColor="Gray" FontSize="14">
+        <Label.Text>
+            <MultiBinding StringFormat="{}{0}, {1:f}">
+                <Binding Path="CategoryName"/>
+                <Binding Path="BoughtAt"/>
+            </MultiBinding>
+        </Label.Text>
+    </Label>
+    <Label FontSize="2"/>
+</StackLayout>

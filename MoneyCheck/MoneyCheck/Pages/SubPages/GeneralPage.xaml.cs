@@ -1,4 +1,5 @@
-﻿using MoneyCheck.Helpers;
+﻿using MoneyCheck.Controls;
+using MoneyCheck.Helpers;
 using MoneyCheck.Models;
 using System;
 using System.Linq;
@@ -14,19 +15,47 @@ namespace MoneyCheck.Pages.SubPages
     public partial class GeneralPage : ContentPage
     {
         public Label NotFoundLabel;
-        public Grid Purchase(decimal amount, Category category)
+        //public Grid Purchase(Purchase purchase, Category category)
+        //{
+        //    RowDefinition row()
+        //    {
+        //        RowDefinition rowDefinition = new RowDefinition();
+        //        rowDefinition.Height = new GridLength(1, GridUnitType.Star);
+        //        return rowDefinition;
+        //    }
+        //    decimal amount = purchase.Amount;
+        //    Grid grid = new Grid();
+        //    grid.RowDefinitions.Add(row());
+        //    grid.RowDefinitions.Add(row());
+        //    bool isPurchase = category.Name != "Зачисление";
+        //    Label transaction = new Label()
+        //    {
+        //        Text = !isPurchase ? $"Зачисление на {amount.ToString("f")} руб." : $"Покупка на {amount.ToString("f")} руб.",
+        //        TextColor = isPurchase ? Color.FromHex("#DE3842") : Color.FromHex("#2EC321"),
+        //        FontSize = 16,
+        //        HorizontalOptions = LayoutOptions.Start,
+        //        VerticalOptions = LayoutOptions.End
+        //    };
+        //    Label categoryAndDate = new Label()
+        //    {
+        //        Text = $"{category.Name}, {purchase.BoughtAt.ToString("f")}",
+        //        TextColor = Color.Gray,
+        //        FontSize = 12,
+        //        HorizontalOptions = LayoutOptions.Start,
+        //        VerticalOptions = LayoutOptions.Start
+        //    };
+
+        //    grid.Children.Add(categoryAndDate);
+        //    Grid.SetRow(categoryAndDate, 1);
+        //    grid.Children.Add(transaction);
+        //    return grid;
+        //}
+
+        public StackLayout Purchase(Purchase purchase)
         {
-            Grid grid = new Grid();
-            bool isPurchase = category.Name != "Зачисление";
-            Label transaction = new Label()
-            {
-                Text = !isPurchase ? $"Зачисление на {amount.ToString("f")} руб." : $"Покупка на {amount.ToString("f")} руб.",
-                TextColor = isPurchase ? Color.FromHex("#DE3842") : Color.FromHex("#2EC321"),
-                FontSize = 18,
-                HorizontalOptions = LayoutOptions.Start,
-            };
-            grid.Children.Add(transaction);
-            return grid;
+            StackLayoutControl stackLayout = new StackLayoutControl();
+            stackLayout.BindingContext = purchase;
+            return stackLayout;
         }
         public GeneralPage()
         {
@@ -185,16 +214,14 @@ namespace MoneyCheck.Pages.SubPages
                 {
                     foreach (Purchase purchase in list)
                     {
-                        var purchases = Purchase(purchase.Amount, Methods.Methods.GetCategory(purchase.CategoryId));
-                        MyTransactions.Children.Add(purchases);
+                        MyTransactions.Children.Add(Purchase(purchase));
                     }
                 }
                 else
                 {
                     foreach (Purchase purchase in list)
                     {
-                        var purchases = Purchase(purchase.Amount, App.Categories.Find(x => x.Id == purchase.CategoryId));
-                        MyTransactions.Children.Add(purchases);
+                        MyTransactions.Children.Add(Purchase(purchase));
                     }
                 }
                 if (App.Transactions.Count > 5)
