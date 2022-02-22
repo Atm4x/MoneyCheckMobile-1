@@ -1,4 +1,4 @@
-﻿using MoneyCheck.Helpers;
+using MoneyCheck.Helpers;
 using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using MoneyCheck.Pages;
@@ -48,8 +48,6 @@ namespace MoneyCheck
             {
                 File.Create(BackupFilePath).Close();
             }
-
-
         }
 
         public async void InitAppAsync()
@@ -105,7 +103,6 @@ namespace MoneyCheck
                             MainPage = new NavigationPage(Tbp);
 
                             App.Tbp.CheckToken();
-
                         }
                         else
                         {
@@ -116,7 +113,6 @@ namespace MoneyCheck
                     {
                         MainPage = new Pages.AuthPage("");
                     }
-
                 }
             }
             else
@@ -124,6 +120,7 @@ namespace MoneyCheck
                 MainPage = new Pages.AuthPage("");
             }
         }
+        
         private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (App.Data != null)
@@ -135,7 +132,6 @@ namespace MoneyCheck
             }
         }
 
-        
         protected override void OnStart()
         {
             InitAppAsync();
