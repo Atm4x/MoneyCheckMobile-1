@@ -29,18 +29,18 @@ namespace MoneyCheck.Pages
             {
                 var passwordHash = MD5HasherHelper.CreateMD5(Password.Text);
 
-                var json = JsonSerializer.Serialize(new { username = Login.Text, passwordHash = passwordHash.ToLower() });
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
+                //var json = JsonSerializer.Serialize(});
+                //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
 
 
-                var url = $"{App.BaseUrl}/auth/api/login";
-                var client = new HttpClient();
+                //var url = $"{App.BaseUrl}/auth/api/login";
+                //var client = new HttpClient();
 
 
-                var response = await client.PostAsync(url, data);
+                var response = await Requests.LogIn(new LogInModel { Username = Login.Text, PasswordHash = passwordHash.ToLower() });
 
-                var status = response.StatusCode;
+                var status = response.statusCode;
 
                 if (status == HttpStatusCode.Unauthorized)
                 {
@@ -53,16 +53,16 @@ namespace MoneyCheck.Pages
                 }
                 else if (status == HttpStatusCode.OK)
                 {
-                    string result = response.Content.ReadAsStringAsync().Result;
+                    string result = response.result;
 
                     var deserializedResult = JsonSerializer.Deserialize<TokenModel>(result);
 
-                    if (App.Data == null) App.Data = new DataHelper.Data();
+                    App.Data = new DataHelper.Data();
                     App.Data.Token = deserializedResult.token;
                     App.Data.Login = Login.Text;
                     App.Data.ExpiresAt = deserializedResult.expiresAt;
 
-                    var categoriesResponse = Requests.GetCategories();
+                    var categoriesResponse = await Requests.GetCategories();
                     if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
                     {
                         App.Categories = categories;

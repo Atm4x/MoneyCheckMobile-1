@@ -1,6 +1,8 @@
 ﻿using MoneyCheck.Helpers;
 using MoneyCheck.Methods;
+using MoneyCheck.Models;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -15,33 +17,34 @@ namespace MoneyCheck.Pages
             InitializeComponent();
         }
 
-        public void CheckToken()
+
+        public async void CheckToken()
         {
             if (App.Data == null)
             {
-                DisplayAlert("Ошибка", "Токен не актуален", "Назад");
-                SendToAuthPage("");
+                await DisplayAlert("Ошибка", "Токен не актуален", "Назад");
+                await SendToAuthPage("");
             }
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                if (Requests.GetStatus().statusCode == System.Net.HttpStatusCode.OK)
+                if ((await Requests.GetStatus()).statusCode == System.Net.HttpStatusCode.OK)
                 {
-                    General.RefreshFromLocal();
-                    General.Refresh();
+                    await General.RefreshFromLocal();
+                    await General.Refresh();
                     CurrentPageChanged += CurrentPageHasChanged;
                     DisplayTitle.Text = "Главная";
                 }
                 else
                 {
-                    General.RefreshFromLocal(true);
+                    await General.RefreshFromLocal(true);
                     DataHelper.ClearToken();
                     App.Data = DataHelper.GetData();
-                    DisplayAlert("Токен истёк", "Токен не актуален", "Назад");
-                    SendToAuthPage("");
+                    await DisplayAlert("Токен истёк", "Токен не актуален", "Назад");
+                    await SendToAuthPage("");
                 }
             }
         }
-        private async void SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
+        private async Task SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
 
         private void CurrentPageHasChanged(object sender, EventArgs e)
         {

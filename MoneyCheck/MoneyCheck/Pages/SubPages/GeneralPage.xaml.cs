@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -72,20 +73,20 @@ namespace MoneyCheck.Pages.SubPages
             //Дениc, это не удаляй >:(
         }
 
-        private void AddPurchase(object sender, EventArgs e)
+        private async void AddPurchase(object sender, EventArgs e)
         {
-            GoAddPurchase();
+            await GoAddPurchase();
         }
 
-        public async void GoAddPurchase() => await Navigation.PushModalAsync(new NavigationPage(new SubPagesMethods.AddPurchasePage()));
+        public async Task GoAddPurchase() => await Navigation.PushModalAsync(new NavigationPage(new SubPagesMethods.AddPurchasePage()));
 
-        public void RefreshFromLocal(bool local = false)
+        public async Task RefreshFromLocal(bool local = false)
         {
             if (App.LocalPurchases.Count > 0)
             {
                 foreach (var purchase in App.LocalPurchases)
                 {
-                    if (!local) Requests.AddPurchase(purchase);
+                    if (!local) await Requests.AddPurchase(purchase);
                     App.Transactions.Add(purchase);
                 }
                 if (!local) App.LocalPurchases.Clear();
@@ -106,21 +107,21 @@ namespace MoneyCheck.Pages.SubPages
         }
 
 
-        public void Refresh(bool useLocal = false)
+        public async Task Refresh(bool useLocal = false)
         {
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var status = Requests.GetStatus();
+                var status = await Requests.GetStatus();
                 if (!useLocal && status.statusCode == HttpStatusCode.OK)
                 {
-                    var purchaseResponse = Requests.GetPurchasesResponse();
+                    var purchaseResponse = await Requests.GetPurchasesResponse();
                     if (ResponseModel.TryParse(purchaseResponse, out List<Purchase> purchases))
                     {
                         if (purchases.Count != 0)
                             App.Transactions = purchases;
                     }
 
-                    var balanceResponse = Requests.GetBalanceResponse();
+                    var balanceResponse = await Requests.GetBalanceResponse();
                     if (ResponseModel.TryParse(balanceResponse, out UserBalance balance))
                     {
                         App.UBalance.SetBalance(balance);
@@ -132,7 +133,7 @@ namespace MoneyCheck.Pages.SubPages
                 }
 
 
-                RefreshFromLocal(true);
+                await RefreshFromLocal(true);
 
                 Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
                 Predication.Text = (App.UBalance?.FutureCash.ToString("f") ?? "0") + " рублей";
@@ -147,7 +148,7 @@ namespace MoneyCheck.Pages.SubPages
                 if (backupModel?.categories?.Count != 0)
                     App.Categories = backupModel.categories.ToList();
 
-                RefreshFromLocal(true);
+                await RefreshFromLocal(true);
                 if (App.Transactions.Count <= backupModel.purchases.Count)
                 {
                     if (backupModel?.balance != null)

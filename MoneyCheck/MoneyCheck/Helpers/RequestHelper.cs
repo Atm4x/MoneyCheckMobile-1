@@ -1,48 +1,54 @@
-﻿using MoneyCheck.Models;
+﻿using MoneyCheck.Interfaces;
+using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MoneyCheck.Helpers
 {
-    public static class RequestHelper
+    public class RequestHelper : IRequestMethods
     {
-        private static HttpClient client = new HttpClient();
-        public static async Task<ResponseModel> GetRequestAsync(string path, string token)
+        private HttpClient client = new HttpClient();
+
+        public async Task<TResult> GetRequestAsync<TResult>(string path, string token)
         {
             string url = $"{App.BaseUrl}/{path}";
             var message = new HttpRequestMessage(HttpMethod.Get, url);
             message.Headers.Add("Cookie", $"cmAuthToken={token}");
+            var responseMessage = await client.SendAsync(message);
 
-            var response = await client.SendAsync(message).ConfigureAwait(false);
-
-            return new ResponseModel()
+            ResponseModel responseModel = new ResponseModel()
             {
-                statusCode = response.StatusCode,
-                result = response.Content.ReadAsStringAsync().Result ?? default
+                statusCode = responseMessage.StatusCode,
+                result = responseMessage.Content.ReadAsStringAsync().Result ?? default
             };
+            TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(responseModel));
+
+            return result;
         }
-        public static async Task<ResponseModel> PostRequestAsync(string path, string token, object value)
+        public async Task<TResult> PostRequestAsync<TResult>(string path, object value, string token = default)
         {
             string url = $"{App.BaseUrl}/{path}";
             var json = JsonSerializer.Serialize(value);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            data.Headers.Add("Cookie", $"cmAuthToken={token}");
+            if(token != default)
+                data.Headers.Add("Cookie", $"cmAuthToken={token}");
 
-            //var message = new HttpRequestMessage(HttpMethod.Post, url);
-            //message.Headers.Add("Cookie", $"cmAuthToken={token}");
+            var responseMessage = await client.PostAsync(url, data);
 
-            var response = await client.PostAsync(json, data).ConfigureAwait(false);
-
-            return new ResponseModel()
+            ResponseModel response = new ResponseModel()
             {
-                statusCode = response.StatusCode,
-                result = response.Content.ReadAsStringAsync().Result ?? default
+                statusCode = responseMessage.StatusCode,
+                result = responseMessage.Content.ReadAsStringAsync().Result ?? default
             };
+            TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(response));
+
+            return result;
         }
     }
 }
