@@ -1,4 +1,5 @@
 ﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using System;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -23,7 +24,7 @@ namespace MoneyCheck.Pages
             }
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                if (Methods.Methods.GetStatus().statusCode == System.Net.HttpStatusCode.OK)
+                if (Requests.GetStatus().statusCode == System.Net.HttpStatusCode.OK)
                 {
                     General.RefreshFromLocal();
                     General.Refresh();

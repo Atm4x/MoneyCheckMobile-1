@@ -1,4 +1,5 @@
 ﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             InitializeComponent();
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = Methods.Methods.GetCategories();
+                var response = Requests.GetCategories();
                 if (ResponseModel.TryParse(response, out List<Category> categories))
                 {
                     App.Categories = categories;
@@ -67,7 +68,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             Purchase purchase = new Purchase();
 
-            var selecteditem = (Models.Category)Category.SelectedItem;
+            var selecteditem = (Category)Category.SelectedItem;
 
             purchase.Amount = amount;
             purchase.BoughtAt = DateTime.Now;
@@ -78,7 +79,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = Methods.Methods.AddPurchase(purchase);
+                var response = Requests.AddPurchase(purchase);
 
                 if (response.statusCode == System.Net.HttpStatusCode.OK)
                 {

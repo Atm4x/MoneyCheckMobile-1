@@ -1,4 +1,5 @@
 ﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using MoneyCheck.Pages;
 using MoneyCheck.Pages.SubPages;
@@ -47,15 +48,21 @@ namespace MoneyCheck
                 File.Create(BackupFilePath).Close();
             }
 
-            var connection = Connectivity.NetworkAccess;
-            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+            InitApp();
 
+        }
+
+        public void InitApp()
+        {
             Data = DataHelper.GetData();
 
             string login = "";
 
             if (App.Data != null)
             {
+                var connection = Connectivity.NetworkAccess;
+                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+
                 if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
                 {
                     var backupModel = BackupHelper.ReadBackup(App.BackupFilePath);
@@ -86,18 +93,14 @@ namespace MoneyCheck
                     }
                     if (App.Data.ExpiresAt > DateTime.Now)
                     {
-                        var response = Methods.Methods.GetStatus();
+                        var response = Requests.GetStatus();
                         var code = response.statusCode;
                         if (code == HttpStatusCode.OK)
                         {
-                            var categoriesResponse = Methods.Methods.GetCategories();
-                            if (categoriesResponse.statusCode == HttpStatusCode.OK)
+                            var categoriesResponse = Requests.GetCategories();
+                            if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
                             {
-                                var result = JsonSerializer.Deserialize<List<Category>>(categoriesResponse.result, new JsonSerializerOptions
-                                {
-                                    PropertyNameCaseInsensitive = true
-                                });
-                                App.Categories = result;
+                                App.Categories = categories;
                             }
                             App.Tbp.CheckToken();
 
@@ -120,7 +123,6 @@ namespace MoneyCheck
                 MainPage = new Pages.AuthPage("");
             }
         }
-
         private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (App.Data != null)

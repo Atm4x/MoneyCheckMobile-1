@@ -1,7 +1,9 @@
 ﻿using MoneyCheck.Controls;
 using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -53,8 +55,10 @@ namespace MoneyCheck.Pages.SubPages
 
         public StackLayout Purchase(Purchase purchase)
         {
-            StackLayoutControl stackLayout = new StackLayoutControl();
-            stackLayout.BindingContext = purchase;
+            StackLayoutControl stackLayout = new StackLayoutControl
+            {
+                BindingContext = purchase
+            };
             return stackLayout;
         }
         public GeneralPage()
@@ -81,7 +85,7 @@ namespace MoneyCheck.Pages.SubPages
             {
                 foreach (var purchase in App.LocalPurchases)
                 {
-                    if (!local) Methods.Methods.AddPurchase(purchase);
+                    if (!local) Requests.AddPurchase(purchase);
                     App.Transactions.Add(purchase);
                 }
                 if (!local) App.LocalPurchases.Clear();
@@ -106,31 +110,19 @@ namespace MoneyCheck.Pages.SubPages
         {
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var status = Methods.Methods.GetStatus();
-                RefreshFromLocal(true);
+                var status = Requests.GetStatus();
                 if (!useLocal && status.statusCode == HttpStatusCode.OK)
                 {
-                    var purchaseResponse = Methods.Methods.GetPurchasesResponse();
-                    var code = purchaseResponse.statusCode;
-                    if (code == HttpStatusCode.OK)
+                    var purchaseResponse = Requests.GetPurchasesResponse();
+                    if (ResponseModel.TryParse(purchaseResponse, out List<Purchase> purchases))
                     {
-                        var result = purchaseResponse.result;
-                        var purchases = JsonSerializer.Deserialize<Purchase[]>(result, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        }).ToList();
                         if (purchases.Count != 0)
                             App.Transactions = purchases;
                     }
 
-                    var balanceResponse = Methods.Methods.GetBalanceResponse();
-                    if (code == HttpStatusCode.OK)
+                    var balanceResponse = Requests.GetBalanceResponse();
+                    if (ResponseModel.TryParse(balanceResponse, out UserBalance balance))
                     {
-                        var result = balanceResponse.result;
-                        var balance = JsonSerializer.Deserialize<UserBalance>(result, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
                         App.UBalance.SetBalance(balance);
                     }
                     if (!BackupHelper.RewriteBackup(App.BackupFilePath))
@@ -140,6 +132,7 @@ namespace MoneyCheck.Pages.SubPages
                 }
 
 
+                RefreshFromLocal(true);
 
                 Balance.Text = (App.UBalance?.Balance.ToString("f") ?? "0") + " рублей";
                 Predication.Text = (App.UBalance?.FutureCash.ToString("f") ?? "0") + " рублей";
@@ -173,8 +166,6 @@ namespace MoneyCheck.Pages.SubPages
                     Spent.Text = (App.UBalance?.TodaySpent.ToString("f") ?? "0") + " рублей";
                 }
             }
-
-
 
             MyDebtors.Children.Clear();
             MyTransactions.Children.Clear();
@@ -210,19 +201,10 @@ namespace MoneyCheck.Pages.SubPages
             else
             {
                 var list = App.Transactions.OrderByDescending(x => x.BoughtAt).Take(5).ToList();
-                if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+
+                foreach (Purchase purchase in list)
                 {
-                    foreach (Purchase purchase in list)
-                    {
-                        MyTransactions.Children.Add(Purchase(purchase));
-                    }
-                }
-                else
-                {
-                    foreach (Purchase purchase in list)
-                    {
-                        MyTransactions.Children.Add(Purchase(purchase));
-                    }
+                    MyTransactions.Children.Add(Purchase(purchase));
                 }
                 if (App.Transactions.Count > 5)
                 {

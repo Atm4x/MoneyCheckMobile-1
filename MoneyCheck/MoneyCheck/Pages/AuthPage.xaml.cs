@@ -1,4 +1,5 @@
 ﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
@@ -61,14 +62,10 @@ namespace MoneyCheck.Pages
                     App.Data.Login = Login.Text;
                     App.Data.ExpiresAt = deserializedResult.expiresAt;
 
-                    var categoriesResponse = Methods.Methods.GetCategories();
-                    if (categoriesResponse.statusCode == HttpStatusCode.OK)
+                    var categoriesResponse = Requests.GetCategories();
+                    if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
                     {
-                        var res = JsonSerializer.Deserialize<List<Category>>(categoriesResponse.result, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
-                        App.Categories = res;
+                        App.Categories = categories;
                     }
 
 
