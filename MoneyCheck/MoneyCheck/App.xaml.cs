@@ -1,4 +1,4 @@
-﻿using MoneyCheck.Helpers;
+using MoneyCheck.Helpers;
 using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using MoneyCheck.Pages;
@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -47,21 +48,18 @@ namespace MoneyCheck
             {
                 File.Create(BackupFilePath).Close();
             }
-
-            InitApp();
-
         }
 
-        public void InitApp()
+        public async void InitAppAsync()
         {
             Data = DataHelper.GetData();
 
             string login = "";
 
+            var connection = Connectivity.NetworkAccess;
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
             if (App.Data != null)
             {
-                var connection = Connectivity.NetworkAccess;
-                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
                 if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
                 {
@@ -76,7 +74,7 @@ namespace MoneyCheck
                         if (backupModel?.categories?.Count != 0)
                             App.Categories = backupModel.categories;
 
-                        ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+                        await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
 
                         MainPage = new NavigationPage(Tbp);
                     }
@@ -93,18 +91,18 @@ namespace MoneyCheck
                     }
                     if (App.Data.ExpiresAt > DateTime.Now)
                     {
-                        var response = Requests.GetStatus();
+                        var response = await Requests.GetStatus();
                         var code = response.statusCode;
                         if (code == HttpStatusCode.OK)
                         {
-                            var categoriesResponse = Requests.GetCategories();
+                            var categoriesResponse = await Requests.GetCategories();
                             if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
                             {
                                 App.Categories = categories;
                             }
-                            App.Tbp.CheckToken();
-
                             MainPage = new NavigationPage(Tbp);
+
+                            App.Tbp.CheckToken();
                         }
                         else
                         {
@@ -115,7 +113,6 @@ namespace MoneyCheck
                     {
                         MainPage = new Pages.AuthPage("");
                     }
-
                 }
             }
             else
@@ -123,6 +120,7 @@ namespace MoneyCheck
                 MainPage = new Pages.AuthPage("");
             }
         }
+        
         private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (App.Data != null)
@@ -136,8 +134,7 @@ namespace MoneyCheck
 
         protected override void OnStart()
         {
-
-
+            InitAppAsync();
         }
 
         protected override void OnSleep()

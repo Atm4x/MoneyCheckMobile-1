@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -17,52 +18,57 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
         public AddPurchasePage()
         {
             InitializeComponent();
+            InitPageSettingsAsync();
+        }
+
+        public async void InitPageSettingsAsync()
+        {
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = Requests.GetCategories();
+                var response = await Requests.GetCategories();
                 if (ResponseModel.TryParse(response, out List<Category> categories))
                 {
                     App.Categories = categories;
                     Category.ItemsSource = categories;
-                }                
+                }
                 else
                 {
                     Category.ItemsSource = App.Categories;
                 }
-            } 
+            }
             else
             {
                 Category.ItemsSource = App.Categories;
             }
         }
 
-        private void AddPurchase(object sender, EventArgs e)
+        private async void AddPurchase(object sender, EventArgs e)
         {
             if (String.IsNullOrWhiteSpace(Amount.Text))
             {
-                DisplayAlert("Не заполнены данные", "Не указана цена", "Ок");
+                await DisplayAlert("Не заполнены данные", "Не указана цена", "Ок");
                 return;
             }
             if (Category.SelectedItem == null)
             {
-                DisplayAlert("Не заполнены данные", "Не выбрана категория", "Ок");
+                await DisplayAlert("Не заполнены данные", "Не выбрана категория", "Ок");
                 return;
             }
             decimal amount = 0.0m;
 
             if(!decimal.TryParse(Amount.Text, out amount))
             {
-                DisplayAlert("Не заполнены данные", "Неправильно указана цена", "Ок");
+                await DisplayAlert("Не заполнены данные", "Неправильно указана цена", "Ок");
                 return;
             }
             if(amount <= 0.0m)
             {
-                DisplayAlert("Некорректные данные", "цена не может быть отрицательной", "Ок");
+                await DisplayAlert("Некорректные данные", "цена не может быть отрицательной", "Ок");
                 return;
             }
             if (amount >= decimal.MaxValue)
             {
-                DisplayAlert("Некорректные данные", "цена не может быть настолько большой", "Ок");
+                await DisplayAlert("Некорректные данные", "цена не может быть настолько большой", "Ок");
                 return;
             }
 
@@ -79,21 +85,21 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = Requests.AddPurchase(purchase);
+                var response = await Requests.AddPurchase(purchase);
 
                 if (response.statusCode == System.Net.HttpStatusCode.OK)
                 {
-                    ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
+                    await ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh();
                     local = false;
                 }
                 else
                 {
-                    DisplayAlert("Ошибка при добавлении Purchase", "понял да?", "Ок");
+                    await DisplayAlert("Ошибка при добавлении Purchase", "понял да?", "Ок");
                     return;
                 }
                 if (!BackupHelper.RewriteBackup(App.BackupFilePath))
                 {
-                    DisplayAlert("Ошибка при добавлении", "Неудача при переписывании Backup файла", "ОК");
+                    await DisplayAlert("Ошибка при добавлении", "Неудача при переписывании Backup файла", "ОК");
                     return;
                 }
             } 
@@ -104,10 +110,10 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             }
             if (local)
             {
-                ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+                await ((GeneralPage)App.ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
             }
 
-            Navigation.PopModalAsync();
+            await Navigation.PopModalAsync();
         }
 
         private void GoBackClick(object sender, EventArgs e)
