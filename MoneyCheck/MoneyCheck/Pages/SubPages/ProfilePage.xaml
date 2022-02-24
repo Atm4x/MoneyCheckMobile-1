@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Pages.SubPages.ProfilePage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame BackgroundColor="#de3842" CornerRadius="8" HorizontalOptions="Center" Padding="0">
+                <Button BackgroundColor="Transparent" TextColor="White" Text="Выйти" FontSize="36" FontFamily="Verdana" Clicked="Exit" TextTransform="None"/>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

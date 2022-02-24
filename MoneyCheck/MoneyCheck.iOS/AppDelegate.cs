@@ -1,3 +1,4 @@
+using Syncfusion.SfChart.XForms.iOS.Renderers;
 using Syncfusion.XForms.iOS.Buttons;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace MoneyCheck.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
 global::Xamarin.Forms.Forms.Init();
+SfChartRenderer.Init();
 SfSegmentedControlRenderer.Init();
             LoadApplication(new App());
 

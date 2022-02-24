@@ -25,7 +25,7 @@ namespace MoneyCheck.Helpers
             ResponseModel responseModel = new ResponseModel()
             {
                 statusCode = responseMessage.StatusCode,
-                result = responseMessage.Content.ReadAsStringAsync().Result ?? default
+                result = await responseMessage.Content.ReadAsStringAsync() ?? default
             };
             TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(responseModel));
 
@@ -44,7 +44,7 @@ namespace MoneyCheck.Helpers
             ResponseModel response = new ResponseModel()
             {
                 statusCode = responseMessage.StatusCode,
-                result = responseMessage.Content.ReadAsStringAsync().Result ?? default
+                result = await responseMessage.Content.ReadAsStringAsync() ?? default
             };
             TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(response));
 

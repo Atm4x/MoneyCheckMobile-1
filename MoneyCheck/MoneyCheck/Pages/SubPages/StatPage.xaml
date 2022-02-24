@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+xmlns:chart="clr-namespace:Syncfusion.SfChart.XForms;assembly=Syncfusion.SfChart.XForms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Pages.SubPages.StatPage">
+    <ContentPage.Content>
+        <RefreshView Refreshing="Refreshing">
+            <ScrollView>
+                <StackLayout Padding="15" Background="#F4F4F4">
+                    <Label Text="График покупок" FontSize="20" VerticalOptions="Center" HorizontalTextAlignment="Center"  HorizontalOptions="Center"/>
+
+                    <Frame CornerRadius="24" Background="#FFF" Padding="8">
+                        <StackLayout Padding="4">
+                            <chart:SfChart HeightRequest="300">
+                                <chart:SfChart.PrimaryAxis >
+                                    <chart:DateTimeAxis RangePadding="Round" IntervalType="Days" Interval="3"/>
+                                </chart:SfChart.PrimaryAxis>
+                                <chart:SfChart.SecondaryAxis>
+                                    <chart:NumericalAxis>
+                                        <chart:NumericalAxis.Title>
+                                            <chart:ChartAxisTitle Text="Сумма" FontSize="12"/>
+                                        </chart:NumericalAxis.Title>
+                                    </chart:NumericalAxis>
+                                </chart:SfChart.SecondaryAxis>
+                                <chart:LineSeries x:Name="Chart" YBindingPath="Amount" XBindingPath="BoughtAt" Color="#b122f4">
+
+                                </chart:LineSeries>
+                            </chart:SfChart>
+
+                            <Grid Margin="2,0,2,0">
+                                <Label x:Name="Lowest" Text="{Binding Path=Amount, StringFormat='Минимальная: {0:f} руб.'}" FontSize="12" HorizontalOptions="Start"/>
+                                <Label x:Name="Highest" Text="{Binding Path=Amount, StringFormat='Максимальная: {0:f} руб.'}" FontSize="12" HorizontalOptions="End"/>
+                            </Grid>
+
+                        </StackLayout>
+                    </Frame>
+                    
+                    <Label Text="Диаграмма покупок по категориям" FontSize="20" VerticalOptions="Center" HorizontalTextAlignment="Center"  HorizontalOptions="Center"/>
+
+                    <Frame CornerRadius="24" Background="#FFF" Padding="4">
+                        <StackLayout>
+                            <chart:SfChart  MinimumHeightRequest="240" HeightRequest="360">
+
+                                <chart:PieSeries   x:Name="Diagram" XBindingPath="Category" YBindingPath="Amount">
+                                </chart:PieSeries>
+
+                                <chart:SfChart.Legend>
+                                    <chart:ChartLegend OverflowMode="Wrap" Series="{Binding Source={ x:Reference Diagram}}" DockPosition="Bottom" Orientation="Horizontal">
+
+                                    </chart:ChartLegend>
+                                </chart:SfChart.Legend>
+                            </chart:SfChart>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+            </ScrollView>
+        </RefreshView>
+    </ContentPage.Content>
+</ContentPage>

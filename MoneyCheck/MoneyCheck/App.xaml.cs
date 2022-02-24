@@ -33,15 +33,16 @@ namespace MoneyCheck
         {
             InitializeComponent();
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTY0NDI5QDMxMzkyZTM0MmUzMFU0eG9iMVp3NXdNMksyM0F2WEFHc0JFZmY4ajJxTGtvMWwxU0RncXBnMTQ9;NTY0NDMwQDMxMzkyZTM0MmUzMFY2ZVBDY291bU9naU41czh2UlRiZXI4RVVhdjB0Q2JiY1lYdjV5MEZGbGM9;NTY0NDMxQDMxMzkyZTM0MmUzMFlCdFhFTmN0TTB2dFgzWU51QUkxeXBISDZPRTBXNDd1OEcyWHdRdC9naWM9;NTY0NDMyQDMxMzkyZTM0MmUzMGtVR2xrZk95djJaNEpvaEx0ZE0zWmRkT1UrN3hKeVJxaEZIdGh6T2FCeTg9");
+        }
 
-
+        public async void InitApp()
+        {
             Tbp = new TabbPage();
 
             foreach (ContentPage page in Tbp.Children)
             {
                 ListPages.Add(page);
             }
-
             var mainPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             BackupFilePath = Path.Combine(mainPath, "Backup.json");
             if (!File.Exists(BackupFilePath))
@@ -49,11 +50,6 @@ namespace MoneyCheck
                 File.Create(BackupFilePath).Close();
             }
 
-
-        }
-
-        public async void InitAppAsync()
-        {
             Data = DataHelper.GetData();
 
             string login = "";
@@ -82,7 +78,10 @@ namespace MoneyCheck
                     }
                     else
                     {
-                        Environment.Exit(-1);
+                        await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+
+                        MainPage = new NavigationPage(Tbp);
+                        //Environment.Exit(-1);
                     }
                 }
                 else
@@ -93,24 +92,20 @@ namespace MoneyCheck
                     }
                     if (App.Data.ExpiresAt > DateTime.Now)
                     {
-                        var response = await Requests.GetStatus();
-                        var code = response.statusCode;
-                        if (code == HttpStatusCode.OK)
-                        {
-                            var categoriesResponse = await Requests.GetCategories();
-                            if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
-                            {
-                                App.Categories = categories;
-                            }
+                        //var response = await Requests.GetStatusAsync();
+                        //var code = response.statusCode;
+                        //if (code == HttpStatusCode.OK)
+                        //{
+                            
+
+                            await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+
                             MainPage = new NavigationPage(Tbp);
-
-                            App.Tbp.CheckToken();
-
-                        }
-                        else
-                        {
-                            MainPage = new Pages.AuthPage(login);
-                        }
+                        //}
+                        //else
+                        //{
+                        //    MainPage = new Pages.AuthPage(login);
+                        //}
                     }
                     else
                     {
@@ -124,13 +119,16 @@ namespace MoneyCheck
                 MainPage = new Pages.AuthPage("");
             }
         }
-        private void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (App.Data != null)
             {
                 if (e.NetworkAccess == NetworkAccess.ConstrainedInternet || e.NetworkAccess == NetworkAccess.Internet)
                 {
-                    App.Tbp.CheckToken();
+                    if (App.Tbp.IsLoaded)
+                    {
+                        await App.Tbp.CheckToken();
+                    }
                 }
             }
         }
@@ -138,7 +136,7 @@ namespace MoneyCheck
         
         protected override void OnStart()
         {
-            InitAppAsync();
+            InitApp();
         }
 
         protected override void OnSleep()

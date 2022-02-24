@@ -21,13 +21,17 @@
             <Image Grid.Column="1" Source="Images/LogoIconWhite.png"/>
         </Grid>
     </NavigationPage.TitleView>
+    
     <local:GeneralPage IconImageSource="Images/mobileMain.png" x:Name="General"></local:GeneralPage>
-    <ContentPage Title="Статистика" IconImageSource="Images/mobileStat.png">
-    </ContentPage>
-    <ContentPage Title="Профиль" IconImageSource="Images/mobileMyAcc.png">
-    </ContentPage>
+
+    <local:StatPage Title="Статистика" IconImageSource="Images/mobileStat.png">
+    </local:StatPage>
+    
+    <local:ProfilePage Title="Профиль" IconImageSource="Images/mobileMyAcc.png"></local:ProfilePage>
+    
     <ContentPage Title="Расчеты" IconImageSource="Images/mobileCalculations.png">
     </ContentPage>
+    
     <ContentPage Title="О нас" IconImageSource="Images/mobileAbout.png">
     </ContentPage>
 

@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -38,7 +39,7 @@ namespace MoneyCheck.Pages
                 //var client = new HttpClient();
 
 
-                var response = await Requests.LogIn(new LogInModel { Username = Login.Text, PasswordHash = passwordHash.ToLower() });
+                var response = await Requests.LogInAsync(new LogInModel { Username = Login.Text, PasswordHash = passwordHash.ToLower() });
 
                 var status = response.statusCode;
 
@@ -62,7 +63,7 @@ namespace MoneyCheck.Pages
                     App.Data.Login = Login.Text;
                     App.Data.ExpiresAt = deserializedResult.expiresAt;
 
-                    var categoriesResponse = await Requests.GetCategories();
+                    var categoriesResponse = await Requests.GetCategoriesAsync();
                     if (ResponseModel.TryParse(categoriesResponse, out List<Category> categories))
                     {
                         App.Categories = categories;
@@ -70,7 +71,6 @@ namespace MoneyCheck.Pages
 
 
                     SendToTabbedPage();
-                    App.Tbp.CheckToken();
                     if (Login.Text.Contains("@gmail.com") ||
                         Login.Text.Contains("@yandex.ru") ||
                         Login.Text.Contains("@mail.ru") ||

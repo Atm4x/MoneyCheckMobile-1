@@ -12,14 +12,22 @@ namespace MoneyCheck.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TabbPage : TabbedPage
     {
+        public bool IsLoaded = false;
         public TabbPage()
         {
             InitializeComponent();
         }
 
-
-        public async void CheckToken()
+        override protected async void OnAppearing()
         {
+            base.OnAppearing();
+            IsLoaded = true;
+            await App.Tbp.CheckToken();
+        }
+
+        public async Task CheckToken()
+        {
+
             if (App.Data == null)
             {
                 await DisplayAlert("Ошибка", "Токен не актуален", "Назад");
@@ -27,7 +35,7 @@ namespace MoneyCheck.Pages
             }
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                if ((await Requests.GetStatus()).statusCode == System.Net.HttpStatusCode.OK)
+                if ((await Requests.GetStatusAsync()).statusCode == System.Net.HttpStatusCode.OK)
                 {
                     await General.RefreshFromLocal();
                     await General.Refresh();
@@ -43,8 +51,9 @@ namespace MoneyCheck.Pages
                     await SendToAuthPage("");
                 }
             }
+
         }
-        private async Task SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
+        public async Task SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
 
         private void CurrentPageHasChanged(object sender, EventArgs e)
         {

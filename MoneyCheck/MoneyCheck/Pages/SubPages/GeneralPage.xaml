@@ -4,70 +4,72 @@
              x:Class="MoneyCheck.Pages.SubPages.GeneralPage" Title="Главная">
 
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="15" Background="#F4F4F4">
-                <Frame CornerRadius="24" Grid.ColumnSpan="2">
-                    <StackLayout Padding="10">
-                        <Label Text="Ваш счёт:" TextColor="Black" FontSize="18"/>
-                        <Label x:Name="Balance" Text="0 рублей" TextColor="#B122F4" FontSize="26"/>
-                        <Label Text="Прогноз на следующий месяц:" TextColor="Black" FontSize="18"/>
-                        <Label x:Name="Predication" Text="0 рублей" TextColor="#2EC321" FontSize="26"/>
-                        <Label Text="Сегодня потрачено: " FontSize="18" TextColor="Black"/>
-                        <Label x:Name="Spent" Text="0 рублей" TextColor="#DE3842" FontSize="26"/>
-                    </StackLayout>
-                </Frame>
-
-                <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition Width="10" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Label Text="Недавние транзакции" TextColor="Black" Grid.Row="1" FontSize="22" HorizontalOptions="Center"  Grid.ColumnSpan="2" FontAttributes="Bold"  VerticalOptions="End"/>
-                    <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
-                        <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White" Clicked="AddPurchase" />
+        <RefreshView Refreshing="Refreshing">
+            <ScrollView>
+                <StackLayout Padding="15" Background="#F4F4F4">
+                    <Frame CornerRadius="24" Grid.ColumnSpan="2">
+                        <StackLayout Padding="10">
+                            <Label Text="Ваш счёт:" TextColor="Black" FontSize="18"/>
+                            <Label x:Name="Balance" Text="0 рублей" TextColor="#B122F4" FontSize="26"/>
+                            <Label Text="Прогноз на следующий месяц:" TextColor="Black" FontSize="18"/>
+                            <Label x:Name="Predication" Text="0 рублей" TextColor="#2EC321" FontSize="26"/>
+                            <Label Text="Сегодня потрачено: " FontSize="18" TextColor="Black"/>
+                            <Label x:Name="Spent" Text="0 рублей" TextColor="#DE3842" FontSize="26"/>
+                        </StackLayout>
                     </Frame>
-                </Grid>
+
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="10" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Text="Недавние транзакции" TextColor="Black" Grid.Row="1" FontSize="22" HorizontalOptions="Center"  Grid.ColumnSpan="2" FontAttributes="Bold"  VerticalOptions="End"/>
+                        <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
+                            <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White" Clicked="AddPurchase" />
+                        </Frame>
+                    </Grid>
 
 
-                <Frame CornerRadius="21" Grid.ColumnSpan="2" Padding="5">
-                    <StackLayout x:Name="MyTransactions" Padding="10">
-
-                    </StackLayout>
-                </Frame>
-
-                <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition Width="10" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Label Text="Ваши должники" TextColor="Black" FontSize="22" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End" Grid.ColumnSpan="2" FontAttributes="Bold"/>
-                    <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
-                        <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White"/>
-                    </Frame>
-                </Grid>
-
-
-                <Frame CornerRadius="21" Grid.ColumnSpan="2" Padding="5">
-                    <ScrollView>
-                        <StackLayout x:Name="MyDebtors" Padding="10">
+                    <Frame CornerRadius="21" Grid.ColumnSpan="2" Padding="5">
+                        <StackLayout x:Name="MyTransactions" Padding="10">
 
                         </StackLayout>
-                    </ScrollView>
-                </Frame>
-            </StackLayout>
-        </ScrollView>
+                    </Frame>
+
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="10" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Text="Ваши должники" TextColor="Black" FontSize="22" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End" Grid.ColumnSpan="2" FontAttributes="Bold"/>
+                        <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
+                            <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White"/>
+                        </Frame>
+                    </Grid>
+
+
+                    <Frame CornerRadius="21" Grid.ColumnSpan="2" Padding="5">
+                        <ScrollView>
+                            <StackLayout x:Name="MyDebtors" Padding="10">
+
+                            </StackLayout>
+                        </ScrollView>
+                    </Frame>
+                </StackLayout>
+            </ScrollView>
+        </RefreshView>
     </ContentPage.Content>
 
 </ContentPage>

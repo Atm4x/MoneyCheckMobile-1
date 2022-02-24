@@ -25,7 +25,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
         {
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = await Requests.GetCategories();
+                var response = await Requests.GetCategoriesAsync();
                 if (ResponseModel.TryParse(response, out List<Category> categories))
                 {
                     App.Categories = categories;
@@ -85,7 +85,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var response = await Requests.AddPurchase(purchase);
+                var response = await Requests.AddPurchaseAsync(purchase);
 
                 if (response.statusCode == System.Net.HttpStatusCode.OK)
                 {
