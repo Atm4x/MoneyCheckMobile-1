@@ -28,11 +28,8 @@
     </local:StatPage>
     
     <local:ProfilePage Title="Профиль" IconImageSource="Images/mobileMyAcc.png"></local:ProfilePage>
-    
-    <ContentPage Title="Расчеты" IconImageSource="Images/mobileCalculations.png">
-    </ContentPage>
-    
-    <ContentPage Title="О нас" IconImageSource="Images/mobileAbout.png">
-    </ContentPage>
+
+    <local:CalcPage Title="Расчеты" IconImageSource="Images/mobileCalculations.png">
+    </local:CalcPage>
 
 </TabbedPage>

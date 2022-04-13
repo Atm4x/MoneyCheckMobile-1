@@ -9,5 +9,6 @@ namespace MoneyCheck.Interfaces
     {
         Task<TResult> GetRequestAsync<TResult>(string path, string token);
         Task<TResult> PostRequestAsync<TResult>(string path, object value, string token = default);
+        Task<TResult> DeleteRequestAsync<TResult>(string path, long id, string token);
     }
 }

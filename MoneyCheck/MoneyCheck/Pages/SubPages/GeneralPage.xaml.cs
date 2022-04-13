@@ -2,6 +2,7 @@
 using MoneyCheck.Helpers;
 using MoneyCheck.Methods;
 using MoneyCheck.Models;
+using MoneyCheck.Pages.SubPages.SubPagesMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace MoneyCheck.Pages.SubPages
         //    return grid;
         //}
 
-        public StackLayout Purchase(Purchase purchase)
+        public Frame Purchase(Purchase purchase)
         {
             StackLayoutControl stackLayout = new StackLayoutControl
             {
@@ -114,7 +115,7 @@ namespace MoneyCheck.Pages.SubPages
 
         public async Task Refresh(bool useLocal = false)
         {
-            if (!useLocal && (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet))
+            if (!useLocal && (Connectivity.NetworkAccess.HasInternet()))
             {
                 var status = await Requests.GetStatusAsync();
                 if (!useLocal && status.statusCode == HttpStatusCode.OK)
@@ -122,8 +123,7 @@ namespace MoneyCheck.Pages.SubPages
                     var purchaseResponse = await Requests.GetPurchasesAsync();
                     if (ResponseModel.TryParse(purchaseResponse, out List<Purchase> purchases))
                     {
-                        if (purchases.Count != 0)
-                            App.Transactions = purchases;
+                        App.Transactions = purchases;
                     }
 
                     var categoriesResponse = await Requests.GetCategoriesAsync();
@@ -240,6 +240,7 @@ namespace MoneyCheck.Pages.SubPages
                     button.FontFamily = "Verdana";
                     button.Background = Brush.Transparent;
                     button.TextTransform = TextTransform.None;
+                    button.Clicked += (sender, e) => { Navigation.PushAsync(new PurchasesListPage()); };
                     showMore.Content = button;
                     MyTransactions.Children.Add(showMore);
                 }

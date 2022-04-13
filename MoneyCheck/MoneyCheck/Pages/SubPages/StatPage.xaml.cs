@@ -1,4 +1,5 @@
-﻿using MoneyCheck.Methods;
+﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace MoneyCheck.Pages.SubPages
         }
         private async void Refreshing(object sender, EventArgs e)
         {
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            if (Connectivity.NetworkAccess.HasInternet())
             {
                 await Refresh();
                 ((RefreshView)sender).IsRefreshing = false;
@@ -71,7 +72,7 @@ namespace MoneyCheck.Pages.SubPages
         public async Task Refresh()
         {
             List<Purchase> purchases = null;
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            if (Connectivity.NetworkAccess.HasInternet())
             {
                 var purchasesResponse = await Requests.GetPurchasesAsync();
                 purchases = purchasesResponse.GetParsed<List<Purchase>>();

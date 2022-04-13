@@ -13,7 +13,7 @@ namespace MoneyCheck.Helpers
         {
             try
             {
-                File.WriteAllText(App.BackupFilePath, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
+                File.WriteAllText(path, JsonSerializer.Serialize(new BackupModel() { balance = App.UBalance, purchases = App.Transactions, categories = App.Categories }));
                 return true;
             }
             catch 
@@ -22,9 +22,22 @@ namespace MoneyCheck.Helpers
             }
         }
 
+        public static bool ClearBackup(string path)
+        {
+            try
+            {
+                File.WriteAllText(path, "");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static BackupModel ReadBackup(string path)
         {
-            var result = File.ReadAllText(App.BackupFilePath);
+            var result = File.ReadAllText(path);
             if (!String.IsNullOrWhiteSpace(result))
             {
                 var backupModel = JsonSerializer.Deserialize<BackupModel>(result, new JsonSerializerOptions

@@ -1,31 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-xmlns:segmentedcontrol="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
-xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MoneyCheck.Pages.SubPages.SubPagesMethods.AddPurchasePage"
-             xmlns:Controls="clr-namespace:MoneyCheck.Controls">
-
+             x:Class="MoneyCheck.Pages.SubPages.SubPagesMethods.PurchaseEditPage">
     <NavigationPage.TitleView>
         <Grid Background="#7b1ba8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="7*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Margin="4" Text="X" Clicked="GoBackClick"/>
-            <Label Background="#7b1ba8" Grid.ColumnSpan="3" FontSize="20" TextColor="White" Text="Добавить транзакцию" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Label Background="#7b1ba8" FontSize="20" TextColor="White" Text="Окно отображения" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Image Grid.Column="2" Source="Images/LogoIconWhite.png"/>
         </Grid>
     </NavigationPage.TitleView>
     <StackLayout Padding="25" Background="#F4F4F4">
         <Frame CornerRadius="24" Background="White">
             <StackLayout>
-                <Frame WidthRequest="200" HeightRequest="200" CornerRadius="20" BorderColor="Black">
-
-                </Frame>
-                <Label FontSize="10"/>
-                <Label FontSize="10"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -34,10 +23,12 @@ xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib
                     <Label Text="Стоимость (руб.)" VerticalOptions="Center"/>
                     <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
                         <Frame CornerRadius="2" Padding="0" HasShadow="False">
-                            <Entry BackgroundColor="White" x:Name="Amount" Keyboard="Numeric" Placeholder="Стоимость" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                            <Entry x:Name="CurrentAmount" BackgroundColor="White" Keyboard="Numeric" Placeholder="Стоимость" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
                         </Frame>
                     </Frame>
                 </Grid>
+
+                <Label FontSize="10"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -48,20 +39,29 @@ xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib
                     <Label Text="Категория" VerticalOptions="Center"/>
                     <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
                         <Frame CornerRadius="2" Padding="0" HasShadow="False">
-                            <Picker ItemDisplayBinding="{Binding Name}" BackgroundColor="White" x:Name="Category" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                            <Picker x:Name="CurrentCategory" ItemDisplayBinding="{Binding Name}" BackgroundColor="White" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
                         </Frame>
                     </Frame>
                 </Grid>
-                
-                <Label FontSize="5"/>
 
+                <Label FontSize="10"/>
 
-
-                <Frame CornerRadius="3"  Padding="0"  HorizontalOptions="Center" WidthRequest="200" VerticalOptions="Center" Style="{StaticResource funcButton}">
-                    <Button Text="Добавить" Background="Transparent" TextColor="White" TextTransform="None" FontSize="20" FontFamily="Verdana"  VerticalOptions="Center" Clicked="AddPurchase"/>
-
-                </Frame>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Frame BackgroundColor="#de3842" CornerRadius="8" HorizontalOptions="Center" Padding="0">
+                        <Button BackgroundColor="Transparent" TextColor="White" Text="Удалить" Clicked="RemoveClicked" FontSize="20" FontFamily="Verdana" TextTransform="None"/>
+                    </Frame>
+                    <Frame Grid.Column="1" Style="{StaticResource funcButton}" CornerRadius="8" HorizontalOptions="Center" Padding="0">
+                        <Button BackgroundColor="Transparent" TextColor="White" Text="Сохранить" Clicked="SaveClicked" FontSize="20" FontFamily="Verdana" TextTransform="None"/>
+                    </Frame>
+                </Grid>
             </StackLayout>
+            
         </Frame>
+
+        
     </StackLayout>
 </ContentPage>

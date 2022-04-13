@@ -15,39 +15,69 @@ namespace MoneyCheck.Methods
         public static async Task<ResponseModel> GetPurchasesAsync()
         {
             string url = $"api/transactions/get-purchases?filter=none";
-            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data.Token);
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
         }
 
         public static async Task<ResponseModel> GetBalanceAsync()
         {
             string url = $"api/web/user-balance-stats";
-            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data.Token);
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
         }
 
+
+        public static async Task<ResponseModel> GetInflationForYearAsync()
+        {
+            string url = $"api/web/get-inflation-for-year";
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
+        }
 
         public static async Task<ResponseModel> AddPurchaseAsync(Purchase purchase)
         {
             string url = $"api/transactions/add-purchase";
-            return await _requestHelper.PostRequestAsync<ResponseModel>(url, purchase, App.Data.Token);
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, purchase, App.Data?.Token);
+        }
+        
+        public static async Task<ResponseModel> RemovePurchaseAsync(Purchase purchase)
+        {
+            string url = $"api/transactions/remove-purchase";
+            return await _requestHelper.DeleteRequestAsync<ResponseModel>(url, purchase.Id.Value, App.Data?.Token);
         }
 
-        public static async Task<ResponseModel> LogInAsync(LogInModel purchase)
+        public static async Task<ResponseModel> EditPurchaseAsync(Purchase purchase)
+        {
+            string url = $"api/transactions/edit-purchase";
+            return await _requestHelper.PatchRequestAsync<ResponseModel>(url, purchase, App.Data?.Token);
+        }
+
+        public static async Task<ResponseModel> LogUpAsync(LogUpModel logUp)
+        {
+            string url = $"auth/api/log-up";
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, logUp);
+        }
+
+        public static async Task<ResponseModel> LogInAsync(LogInModel logIn)
         {
             string url = $"auth/api/login";
-            return await _requestHelper.PostRequestAsync<ResponseModel>(url, purchase);
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, logIn);
+        }
+
+        public static async Task<ResponseModel> LogOutAsync()
+        {
+            string url = $"auth/api/logout?token={App.Data?.Token}";
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, "");
         }
 
         public static async Task<ResponseModel> GetCategoriesAsync()
         {
             string url = $"api/web/get-categories";
-            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data.Token);
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
 
         }
 
         public static async Task<ResponseModel> GetStatusAsync()
         {
             string url = $"api/token-ensurer/ensure";
-            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data.Token);
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
 
         }
     }

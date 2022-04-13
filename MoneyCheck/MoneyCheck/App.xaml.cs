@@ -29,6 +29,8 @@ namespace MoneyCheck
         public static List<Purchase> LocalPurchases = new List<Purchase>();
         public static string BackupFilePath = String.Empty;
 
+        public static Page MainWindow;
+
         public App()
         {
             InitializeComponent();
@@ -37,6 +39,7 @@ namespace MoneyCheck
 
         public async void InitApp()
         {
+            MainWindow = MainPage;
             Tbp = new TabbPage();
 
             foreach (ContentPage page in Tbp.Children)
@@ -59,7 +62,7 @@ namespace MoneyCheck
             if (App.Data != null)
             {
 
-                if (connection == NetworkAccess.Local || connection == NetworkAccess.None)
+                if (!Connectivity.NetworkAccess.HasInternet())
                 {
                     var backupModel = BackupHelper.ReadBackup(App.BackupFilePath);
                     if (backupModel != null)
@@ -97,7 +100,6 @@ namespace MoneyCheck
                         //if (code == HttpStatusCode.OK)
                         //{
                             
-
                             await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
 
                             MainPage = new NavigationPage(Tbp);
@@ -109,21 +111,21 @@ namespace MoneyCheck
                     }
                     else
                     {
-                        MainPage = new Pages.AuthPage("");
+                        MainPage = new NavigationPage(new Pages.AuthPage(login));
                     }
 
                 }
             }
             else
             {
-                MainPage = new Pages.AuthPage("");
+                MainPage = new NavigationPage(new Pages.AuthPage(""));
             }
         }
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (App.Data != null)
             {
-                if (e.NetworkAccess == NetworkAccess.ConstrainedInternet || e.NetworkAccess == NetworkAccess.Internet)
+                if (e.NetworkAccess.HasInternet())
                 {
                     if (App.Tbp.IsLoaded)
                     {

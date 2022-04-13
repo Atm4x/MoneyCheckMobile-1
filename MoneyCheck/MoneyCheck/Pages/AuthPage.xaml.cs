@@ -23,12 +23,23 @@ namespace MoneyCheck.Pages
         }
         // private async void SendToTabbedPage() => await Navigation.PushModalAsync(new NavigationPage(App.Tbp));
         private void SendToTabbedPage() => App.Current.MainPage = new NavigationPage(App.Tbp);
+        private void SendToRegPage() => Navigation.PushAsync(new RegPage());
 
         private async void EnterButton(object sender, EventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(Login.Text))
+            {
+                await DisplayAlert("Не заполнены данные", "Не заполнен логин", "Ок");
+                return;
+            }
+            if (String.IsNullOrWhiteSpace(Password.Text))
+            {
+                await DisplayAlert("Не заполнены данные", "Не заполнен пароль", "Ок");
+                return;
+            }
             if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
             {
-                var passwordHash = MD5HasherHelper.CreateMD5(Password.Text);
+                var passwordHash = MD5HasherHelper.CreateMD5(Password.Text ?? "");
 
                 //var json = JsonSerializer.Serialize(});
                 //var data = new StringContent(json, Encoding.UTF8, "application/json");
@@ -39,18 +50,18 @@ namespace MoneyCheck.Pages
                 //var client = new HttpClient();
 
 
-                var response = await Requests.LogInAsync(new LogInModel { Username = Login.Text, PasswordHash = passwordHash.ToLower() });
+                var response = await Requests.LogInAsync(new LogInModel { Username = Login.Text ?? "", PasswordHash = passwordHash.ToLower() });
 
                 var status = response.statusCode;
 
                 if (status == HttpStatusCode.Unauthorized)
                 {
-                    await DisplayAlert("Error", "Unauthorized", "OK");
+                    await DisplayAlert("Ошибка", "Не удалось войти. Проверьте введённые данные.", "OK");
                     //Environment.Exit(-1);
                 }
                 else if (status == HttpStatusCode.BadRequest)
                 {
-                    await DisplayAlert("Warning", "Not https", "OK");
+                    await DisplayAlert("Ошибка", "Внутренняя ошибка", "OK");
                 }
                 else if (status == HttpStatusCode.OK)
                 {
@@ -84,6 +95,11 @@ namespace MoneyCheck.Pages
                     await DisplayAlert("Ошибка", "Требуется подключение к интернету", "OK");
                 }
             }
+        }
+
+        private void SendToRegClicked(object sender, EventArgs e)
+        {
+            SendToRegPage();
         }
     }
 }

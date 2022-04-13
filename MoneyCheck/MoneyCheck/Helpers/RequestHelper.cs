@@ -50,5 +50,39 @@ namespace MoneyCheck.Helpers
 
             return result;
         }
+        public async Task<TResult> DeleteRequestAsync<TResult>(string path, long id, string token)
+        {
+            string url = $"{App.BaseUrl}/{path}?id={id}";
+            var message = new HttpRequestMessage(HttpMethod.Delete, url);
+            message.Headers.Add("Cookie", $"cmAuthToken={token}");
+            var responseMessage = await client.SendAsync(message);
+
+            ResponseModel response = new ResponseModel()
+            {
+                statusCode = responseMessage.StatusCode,
+                result = await responseMessage.Content.ReadAsStringAsync() ?? default
+            };
+            TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(response));
+
+            return result;
+        }
+        public async Task<TResult> PatchRequestAsync<TResult>(string path, object value, string token)
+        {
+            string url = $"{App.BaseUrl}/{path}";
+            var json = JsonSerializer.Serialize(value);
+            var message = new HttpRequestMessage(new HttpMethod("PATCH"), url);
+            message.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            message.Headers.Add("Cookie", $"cmAuthToken={token}");
+            var responseMessage = await client.SendAsync(message);
+
+            ResponseModel response = new ResponseModel()
+            {
+                statusCode = responseMessage.StatusCode,
+                result = await responseMessage.Content.ReadAsStringAsync() ?? default
+            };
+            TResult result = JsonSerializer.Deserialize<TResult>(JsonSerializer.Serialize(response));
+
+            return result;
+        }
     }
 }

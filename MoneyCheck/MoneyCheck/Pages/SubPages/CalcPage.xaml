@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:chart="clr-namespace:Syncfusion.SfChart.XForms;assembly=Syncfusion.SfChart.XForms"
+             x:Class="MoneyCheck.Pages.SubPages.CalcPage">
+    <ContentPage.Content>
+        <RefreshView Refreshing="Refreshing">
+            <ScrollView>
+                <StackLayout Padding="15" Background="#F4F4F4">
+                    <Label Text="Прогноз инфляции на год" FontSize="20" VerticalOptions="Center" HorizontalTextAlignment="Center"  HorizontalOptions="Center"/>
+
+                    <Frame CornerRadius="24" Background="#FFF" Padding="8">
+                        <StackLayout Padding="4">
+                            <chart:SfChart HeightRequest="300">
+                                <chart:SfChart.PrimaryAxis >
+                                    <chart:CategoryAxis Interval="1"/>
+                                </chart:SfChart.PrimaryAxis>
+                                <chart:SfChart.SecondaryAxis>
+                                    <chart:NumericalAxis>
+                                        <chart:NumericalAxis.Title>
+                                            <chart:ChartAxisTitle Text="Процент инфляции" FontSize="12"/>
+                                        </chart:NumericalAxis.Title>
+                                    </chart:NumericalAxis>
+                                </chart:SfChart.SecondaryAxis>
+                                <chart:LineSeries x:Name="Chart" YBindingPath="Value" XBindingPath="Index" Color="#b122f4">
+
+                                </chart:LineSeries>
+                            </chart:SfChart>
+
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+            </ScrollView>
+        </RefreshView>
+    </ContentPage.Content>
+</ContentPage>

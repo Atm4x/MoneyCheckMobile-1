@@ -33,7 +33,7 @@ namespace MoneyCheck.Pages
                 await DisplayAlert("Ошибка", "Токен не актуален", "Назад");
                 await SendToAuthPage("");
             }
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            if (Connectivity.NetworkAccess.HasInternet())
             {
                 if ((await Requests.GetStatusAsync()).statusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -53,7 +53,7 @@ namespace MoneyCheck.Pages
             }
 
         }
-        public async Task SendToAuthPage(string login) => await Navigation.PushModalAsync(new Pages.AuthPage(login));
+        public async Task SendToAuthPage(string login) { Application.Current.MainPage = new NavigationPage(new Pages.AuthPage(login)); }
 
         private void CurrentPageHasChanged(object sender, EventArgs e)
         {
