@@ -19,7 +19,7 @@ namespace MoneyCheck
     {
         public static string BaseUrl = "https://moneycheck.gym1551.ru";
         public static List<Purchase> Transactions = new List<Purchase>();
-        public static List<object> Debtors = new List<object>();
+        public static List<DebtorType> Debtors = new List<DebtorType>();
         public static DataHelper.Data Data;
         public static UserBalance UBalance = new UserBalance();
         public static List<Category> Categories = new List<Category>();
@@ -27,6 +27,7 @@ namespace MoneyCheck
         public static List<ContentPage> ListPages = new List<ContentPage>();
 
         public static List<Purchase> LocalPurchases = new List<Purchase>();
+        public static List<DebtorType> LocalDebtors = new List<DebtorType>();
         public static string BackupFilePath = String.Empty;
 
         public static Page MainWindow;
@@ -95,19 +96,8 @@ namespace MoneyCheck
                     }
                     if (App.Data.ExpiresAt > DateTime.Now)
                     {
-                        //var response = await Requests.GetStatusAsync();
-                        //var code = response.statusCode;
-                        //if (code == HttpStatusCode.OK)
-                        //{
-                            
-                            await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
-
-                            MainPage = new NavigationPage(Tbp);
-                        //}
-                        //else
-                        //{
-                        //    MainPage = new Pages.AuthPage(login);
-                        //}
+                        await ((GeneralPage)ListPages.FirstOrDefault(x => x is GeneralPage)).Refresh(true);
+                        MainPage = new NavigationPage(Tbp);
                     }
                     else
                     {

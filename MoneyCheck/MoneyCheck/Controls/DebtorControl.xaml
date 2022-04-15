@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Controls.DebtorControl"
+       BorderColor="Transparent" 
+       VerticalOptions="Center" 
+       HasShadow="False" 
+       Background="Transparent" 
+       Padding="0" >
+    <StackLayout Orientation="Horizontal">
+        <StackLayout.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped"/>
+        </StackLayout.GestureRecognizers>
+        <Label TextColor="Green" FontSize="18" Text="{Binding Path=Name}"/>
+        <Label TextColor="Red" FontSize="18" Text="{Binding Path=FullAmount, StringFormat='{}{0:f} руб.'}"/>
+    </StackLayout>
+</Frame>

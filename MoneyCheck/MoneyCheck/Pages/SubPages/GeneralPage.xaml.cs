@@ -63,6 +63,14 @@ namespace MoneyCheck.Pages.SubPages
             };
             return stackLayout;
         }
+        public Frame Debtor(DebtorType debtor)
+        {
+            DebtorControl stackLayout = new DebtorControl
+            {
+                BindingContext = debtor
+            };
+            return stackLayout;
+        }
         public GeneralPage()
         {
             InitializeComponent();
@@ -79,6 +87,12 @@ namespace MoneyCheck.Pages.SubPages
             await GoAddPurchase();
         }
 
+        private async void AddDebtor(object sender, EventArgs e)
+        {
+            await GoAddDebtor();
+        }
+
+        public async Task GoAddDebtor() => await Navigation.PushModalAsync(new NavigationPage(new SubPagesMethods.AddDebtorPage()));
         public async Task GoAddPurchase() => await Navigation.PushModalAsync(new NavigationPage(new SubPagesMethods.AddPurchasePage()));
 
         public async Task RefreshFromLocal(bool local = false)
@@ -89,6 +103,15 @@ namespace MoneyCheck.Pages.SubPages
                 {
                     if (!local) await Requests.AddPurchaseAsync(purchase);
                     App.Transactions.Add(purchase);
+                }
+                if (!local) App.LocalPurchases.Clear();
+            }
+            if (App.LocalDebtors.Count > 0)
+            {
+                foreach (var debtor in App.LocalDebtors)
+                {
+                    if (!local) await Requests.AddDebtorAsync(debtor);
+                    App.Debtors.Add(debtor);
                 }
                 if (!local) App.LocalPurchases.Clear();
             }
@@ -124,6 +147,12 @@ namespace MoneyCheck.Pages.SubPages
                     if (ResponseModel.TryParse(purchaseResponse, out List<Purchase> purchases))
                     {
                         App.Transactions = purchases;
+                    }
+
+                    var debtorsResponse = await Requests.GetDebtorsAsync();
+                    if (ResponseModel.TryParse(debtorsResponse, out List<DebtorType> debtors))
+                    {
+                        App.Debtors = debtors;
                     }
 
                     var categoriesResponse = await Requests.GetCategoriesAsync();
@@ -202,7 +231,32 @@ namespace MoneyCheck.Pages.SubPages
             }
             else
             {
+                var list = App.Debtors.OrderByDescending(x => x.Name).Take(5).ToList();
 
+                foreach (DebtorType debtor in list)
+                {
+                    MyDebtors.Children.Add(Debtor(debtor));
+                }
+
+                if (App.Debtors.Count > 5)
+                {
+                    Frame showMore = new Frame();
+                    showMore.Style = (Style)Application.Current.Resources["funcButton"];
+                    showMore.HorizontalOptions = LayoutOptions.Center;
+                    showMore.VerticalOptions = LayoutOptions.Center;
+                    showMore.CornerRadius = 3;
+                    showMore.Padding = 2.5;
+                    Button button = new Button();
+                    button.Text = "Смотреть все";
+                    button.FontSize = 20;
+                    button.TextColor = Color.White;
+                    button.FontFamily = "Verdana";
+                    button.Background = Brush.Transparent;
+                    button.TextTransform = TextTransform.None;
+                    button.Clicked += (sender, e) => { Navigation.PushAsync(new DebtorsViewPage()); };
+                    showMore.Content = button;
+                    MyDebtors.Children.Add(showMore);
+                }
             }
             if (App.Transactions.Count <= 0)
             {

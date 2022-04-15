@@ -36,7 +36,31 @@ namespace MoneyCheck.Methods
             string url = $"api/transactions/add-purchase";
             return await _requestHelper.PostRequestAsync<ResponseModel>(url, purchase, App.Data?.Token);
         }
+
+        public static async Task<ResponseModel> AddDebtorAsync(DebtorType debtor)
+        {
+            string url = $"api/debtors/add";
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, debtor, App.Data?.Token);
+        }
         
+        public static async Task<ResponseModel> AddDebtAsync(object debt)
+        {
+            string url = $"api/debts/add-debt";
+            return await _requestHelper.PostRequestAsync<ResponseModel>(url, debt, App.Data?.Token);
+        }
+        
+        public static async Task<ResponseModel> GetDebtorsAsync()
+        {
+            string url = $"api/web/get-debtors";
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
+        }
+
+        public static async Task<ResponseModel> GetDebtsAsync()
+        {
+            string url = $"api/debts/get-debts";
+            return await _requestHelper.GetRequestAsync<ResponseModel>(url, App.Data?.Token);
+        }
+
         public static async Task<ResponseModel> RemovePurchaseAsync(Purchase purchase)
         {
             string url = $"api/transactions/remove-purchase";

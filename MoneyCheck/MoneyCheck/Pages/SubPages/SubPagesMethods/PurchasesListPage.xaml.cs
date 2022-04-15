@@ -1,4 +1,5 @@
-﻿using MoneyCheck.Methods;
+﻿using MoneyCheck.Helpers;
+using MoneyCheck.Methods;
 using MoneyCheck.Models;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,11 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
             var fullList = App.Transactions.ToList();
             fullList.AddRange(App.LocalPurchases);
 
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            if (Connectivity.NetworkAccess.HasInternet())
             {
                 if (ResponseModel.TryParse(await Requests.GetPurchasesAsync(), out List<Purchase> purchases))
                 {
-                    if (purchases.Count != 0)
-                        fullList = purchases;
+                    fullList = purchases;
                 }
             }
 

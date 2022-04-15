@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyCheck.Pages.SubPages.SubPagesMethods.AddDebtorPage">
+    <NavigationPage.TitleView>
+        <Grid Background="#7b1ba8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="4" Text="X" Clicked="GoBackClick"/>
+            <Label Background="#7b1ba8" Grid.ColumnSpan="3" FontSize="20" TextColor="White" Text="Добавить должника" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Image Grid.Column="2" Source="Images/LogoIconWhite.png"/>
+        </Grid>
+    </NavigationPage.TitleView>
+    <StackLayout Padding="25" Background="#F4F4F4">
+        <Frame CornerRadius="24" Background="White">
+            <StackLayout>
+                
+                <Label FontSize="10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Имя должника" VerticalOptions="Center"/>
+                    <Frame CornerRadius="3"  Padding="2.5"  Style="{StaticResource authStyle}" Grid.Column="1">
+                        <Frame CornerRadius="2" Padding="0" HasShadow="False">
+                            <Entry BackgroundColor="White" x:Name="Name" Placeholder="Имя" FontSize="15" FontFamily="Verdana" VerticalOptions="Center"/>
+                        </Frame>
+                    </Frame>
+                </Grid>
+                <Label FontSize="5"/>
+                <Frame CornerRadius="3"  Padding="0"  HorizontalOptions="Center" WidthRequest="200" VerticalOptions="Center" Style="{StaticResource funcButton}">
+                    <Button Text="Добавить" Background="Transparent" TextColor="White" TextTransform="None" FontSize="20" FontFamily="Verdana"  VerticalOptions="Center" Clicked="AddDebtor"/>
+
+                </Frame>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</ContentPage>

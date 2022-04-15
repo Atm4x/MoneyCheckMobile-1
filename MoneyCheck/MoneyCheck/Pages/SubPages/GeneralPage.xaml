@@ -55,7 +55,7 @@
                         </Grid.RowDefinitions>
                         <Label Text="Ваши должники" TextColor="Black" FontSize="22" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End" Grid.ColumnSpan="2" FontAttributes="Bold"/>
                         <Frame  Grid.Column="1" CornerRadius="25" Padding="0" Grid.Row="1">
-                            <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Background="White"/>
+                            <Button Text="+" TextColor="#B122F4" HorizontalOptions="Fill" Padding="0" VerticalOptions="Fill" FontSize="20" Clicked="AddDebtor" Background="White"/>
                         </Frame>
                     </Grid>
 

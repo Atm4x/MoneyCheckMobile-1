@@ -29,7 +29,7 @@
     
     <local:ProfilePage Title="Профиль" IconImageSource="Images/mobileMyAcc.png"></local:ProfilePage>
 
-    <local:CalcPage Title="Расчеты" IconImageSource="Images/mobileCalculations.png">
+    <local:CalcPage Title="Прогнозы" IconImageSource="Images/mobileCalculations.png">
     </local:CalcPage>
 
 </TabbedPage>

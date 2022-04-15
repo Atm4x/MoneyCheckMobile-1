@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:MoneyCheck.Controls"
+             x:Class="MoneyCheck.Pages.SubPages.SubPagesMethods.DebtorsViewPage">
+    <NavigationPage.TitleView>
+        <Grid Background="#7b1ba8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Background="#7b1ba8" FontSize="20" TextColor="White" Text="Список должников" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Image Grid.Column="2" Source="Images/LogoIconWhite.png"/>
+        </Grid>
+    </NavigationPage.TitleView>
+    <ScrollView Background="#F4F4F4">
+        <ListView x:Name="ListOfDebtors" RowHeight="65">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Background="#fff">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <local:DebtorControl VerticalOptions="End" x:Name="Debtor" Grid.Column="1"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ScrollView>
+</ContentPage>

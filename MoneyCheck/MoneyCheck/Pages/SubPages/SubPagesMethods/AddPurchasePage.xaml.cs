@@ -83,7 +83,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
             bool local = false;
 
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet || Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            if (Connectivity.NetworkAccess.HasInternet())
             {
                 var response = await Requests.AddPurchaseAsync(purchase);
 
@@ -118,7 +118,7 @@ namespace MoneyCheck.Pages.SubPages.SubPagesMethods
 
         private void GoBackClick(object sender, EventArgs e)
         {
-            Navigation.PopModalAsync();
+            App.Tbp.Navigation.PopModalAsync();
         }
     }
 }
